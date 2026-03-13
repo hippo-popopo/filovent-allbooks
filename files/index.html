@@ -144,8 +144,8 @@
         /* ── CARDS GRID ── */
         .cards {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px; width: 100%; max-width: 960px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px; width: 100%; max-width: 1260px;
         }
 
         .card {
@@ -178,6 +178,10 @@
         .card-gold::before { background: linear-gradient(160deg, rgba(201,145,58,0.25), rgba(9,26,51,0.8)); }
         .card-gold:hover { box-shadow: 0 20px 50px rgba(201,145,58,0.2); border-color: rgba(201,145,58,0.35); }
 
+        .card-coral { background: linear-gradient(160deg, rgba(217,79,61,0.14), rgba(9,26,51,0.7)); }
+        .card-coral::before { background: linear-gradient(160deg, rgba(217,79,61,0.25), rgba(9,26,51,0.8)); }
+        .card-coral:hover { box-shadow: 0 20px 50px rgba(217,79,61,0.2); border-color: rgba(217,79,61,0.35); }
+
         .card-icon {
             width: 48px; height: 48px; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
@@ -187,6 +191,7 @@
         .card-green .card-icon { background: rgba(42,122,196,0.2); border: 1px solid rgba(42,122,196,0.25); }
         .card-blue  .card-icon { background: rgba(26,155,114,0.2); border: 1px solid rgba(26,155,114,0.25); }
         .card-gold  .card-icon { background: rgba(201,145,58,0.2); border: 1px solid rgba(201,145,58,0.25); }
+        .card-coral .card-icon { background: rgba(217,79,61,0.2); border: 1px solid rgba(217,79,61,0.25); }
 
         .card-badge {
             display: inline-flex; align-items: center; gap: 5px;
@@ -203,6 +208,8 @@
         .card-blue  .card-badge::before { background: #5ecba5; }
         .card-gold  .card-badge { background: rgba(201,145,58,0.2); color: #e0b870; }
         .card-gold  .card-badge::before { background: #e0b870; }
+        .card-coral .card-badge { background: rgba(217,79,61,0.2); color: #f0a090; }
+        .card-coral .card-badge::before { background: #f0a090; }
         .card-badge.soon { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.35); }
         .card-badge.soon::before { background: rgba(255,255,255,0.25); }
 
@@ -266,15 +273,16 @@
         .card:nth-child(1) { animation: fadeUp 0.7s ease 0.3s both; }
         .card:nth-child(2) { animation: fadeUp 0.7s ease 0.42s both; }
         .card:nth-child(3) { animation: fadeUp 0.7s ease 0.54s both; }
+        .card:nth-child(4) { animation: fadeUp 0.7s ease 0.66s both; }
 
         /* ── RESPONSIVE ── */
-        @media (max-width: 1024px) {
+        @media (max-width: 1300px) {
             .cards { grid-template-columns: repeat(2, 1fr); max-width: 640px; }
             .stats { gap: 32px; }
         }
         @media (max-width: 600px) {
             .cards { grid-template-columns: 1fr; max-width: 400px; }
-            .stats { flex-direction: column; gap: 16px; }
+            .stats { flex-wrap: wrap; gap: 16px; justify-content: center; }
             .stat-sep { display: none; }
             header { margin-bottom: 36px; }
         }
@@ -321,6 +329,11 @@
             <div class="stat-num c3">60+</div>
             <div class="stat-label">termes nautiques</div>
         </div>
+        <div class="stat-sep"></div>
+        <div class="stat">
+            <div class="stat-num" style="color:var(--coral);">37</div>
+            <div class="stat-label">itinéraires</div>
+        </div>
     </div>
 
     <div class="cards">
@@ -360,6 +373,19 @@
                 <span class="pill">QCM</span>
                 <span class="pill">Modules</span>
                 <span class="pill">Progression</span>
+            </div>
+        </a>
+
+        <a class="card card-coral" href="itineraires.html" aria-label="Ouvrir les Itinéraires">
+            <div class="card-arrow">↗</div>
+            <div class="card-icon">🧭</div>
+            <div class="card-badge">Disponible</div>
+            <div class="card-title">Itinéraires</div>
+            <div class="card-desc">37 itinéraires de navigation détaillés à travers le monde. Méditerranée, Caraïbes, Océan Indien, fleuves et expéditions.</div>
+            <div class="card-pills">
+                <span class="pill">37 itinéraires</span>
+                <span class="pill">8 zones</span>
+                <span class="pill">Fiches détaillées</span>
             </div>
         </a>
     </div>

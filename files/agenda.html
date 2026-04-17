@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --nav:#0b1f3a;--nav2:#132d50;--accent:#2e7fc8;--gold:#c8923a;
+  --green:#1a9b72;--red:#d94f3d;--bg:#f2f4f7;--card:#ffffff;
+  --border:#e0e5ed;--t1:#111827;--t2:#374151;--t3:#8898aa;
+  --r:10px;--shadow:0 2px 12px rgba(11,31,58,.08);--sidebar:262px;
+}
+html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;color:var(--t1);background:var(--bg);overflow:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,textarea,select{font-family:inherit;outline:none;background:transparent}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,.14);border-radius:4px}
+
+/* LAYOUT */
+#app{display:flex;height:100vh;overflow:hidden}
+#sidebar{width:var(--sidebar);flex-shrink:0;background:var(--nav);display:flex;flex-direction:column;overflow:hidden;box-shadow:3px 0 20px rgba(0,0,0,.18);z-index:10}
+#content{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* SIDEBAR */
+.sb-brand{padding:20px 18px 15px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.12rem;color:#fff;display:flex;align-items:center;gap:8px}
+.sb-sub{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.27);margin-top:4px}
+.sb-nav{padding:8px 8px 0;flex:1;overflow-y:auto}
+.sb-section{font-size:.59rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.22);font-weight:700;padding:10px 10px 5px;margin-top:2px}
+.sb-btn{display:flex;align-items:center;gap:9px;width:100%;padding:8px 10px;border-radius:8px;color:rgba(255,255,255,.5);font-size:.81rem;font-weight:500;transition:all .15s;text-align:left}
+.sb-btn:hover{color:rgba(255,255,255,.88);background:rgba(255,255,255,.07)}
+.sb-btn.active{color:#fff;background:rgba(46,127,200,.3);font-weight:600}
+.sb-btn .icon{font-size:.9rem;width:17px;text-align:center;flex-shrink:0}
+.sb-badge{margin-left:auto;background:var(--red);color:#fff;font-size:.59rem;font-weight:700;padding:2px 6px;border-radius:20px;min-width:17px;text-align:center}
+.sb-badge.gold{background:var(--gold)}.sb-badge.green{background:var(--green)}
+.sb-search{padding:5px 8px}
+.sb-search input{width:100%;padding:6px 10px;border-radius:7px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.07);color:#fff;font-size:.77rem;transition:.2s}
+.sb-search input::placeholder{color:rgba(255,255,255,.27)}
+.sb-search input:focus{border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.1)}
+.sb-client{display:flex;align-items:center;gap:9px;padding:6px 10px;border-radius:8px;cursor:pointer;transition:.15s}
+.sb-client:hover{background:rgba(255,255,255,.06)}.sb-client.active{background:rgba(46,127,200,.25)}
+.sb-avatar{width:27px;height:27px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--green));display:flex;align-items:center;justify-content:center;font-size:.67rem;font-weight:700;color:#fff}
+.sb-cname{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-cmeta{font-size:.65rem;color:rgba(255,255,255,.3)}
+.sb-empty{padding:10px 10px;font-size:.75rem;color:rgba(255,255,255,.27)}
+.sb-footer{padding:10px 8px;border-top:1px solid rgba(255,255,255,.07)}
+.api-btn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.04);transition:.15s;cursor:pointer}
+.api-btn:hover{background:rgba(255,255,255,.08)}
+.api-dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0;transition:.3s}
+.api-dot.ok{background:var(--green);box-shadow:0 0 6px rgba(26,155,114,.6)}
+.api-txt{font-size:.71rem;color:rgba(255,255,255,.44);flex:1}
+
+/* TOPBAR */
+#topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 26px;height:54px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;z-index:5}
+.tb-title{font-family:'Syne',sans-serif;font-size:.97rem;font-weight:800;color:var(--nav)}
+.tb-actions{display:flex;align-items:center;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:.79rem;font-weight:600;transition:.15s;cursor:pointer}
+.btn-navy{background:var(--nav);color:#fff}.btn-navy:hover{background:var(--nav2);transform:translateY(-1px)}
+.btn-outline{border:1px solid var(--border);color:var(--t2);background:var(--card)}.btn-outline:hover{background:var(--bg)}
+.btn-red{border:1px solid rgba(217,79,61,.25);color:var(--red);background:rgba(217,79,61,.06)}.btn-red:hover{background:rgba(217,79,61,.12)}
+
+/* PANELS */
+.panel{display:none;flex:1;overflow:hidden}
+.panel.active{display:flex;flex-direction:column;overflow:hidden}
+.panel-scroll{flex:1;overflow-y:auto;padding:22px 26px}
+
+/* CARD */
+.card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow)}
+.card-hd{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-weight:700;font-size:.87rem;color:var(--nav);display:flex;align-items:center;gap:7px}
+
+/* CALENDAR */
+.cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:17px}
+.cal-nav-btn{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:.8rem;transition:.15s;cursor:pointer}
+.cal-nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.cal-month{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--nav);flex:1}
+.cal-vtoggle{display:flex;border:1px solid var(--border);border-radius:7px;overflow:hidden}
+.cal-vbtn{padding:5px 13px;background:var(--card);font-size:.74rem;font-weight:500;color:var(--t3);transition:.15s;cursor:pointer}
+.cal-vbtn.active{background:var(--nav);color:#fff}
+.cal-grid{background:var(--card);border-radius:var(--r);border:1px solid var(--border);overflow:hidden}
+.cal-head{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border)}
+.cal-dh{padding:9px 5px;text-align:center;font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+.cal-body{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-cell{min-height:88px;padding:6px 5px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;position:relative}
+.cal-cell:hover{background:#f7f9fc}.cal-cell:nth-child(7n){border-right:none}
+.cal-cell.other{background:#fafbfc}.cal-cell.other .cal-num{color:var(--t3)}
+.cal-cell.today{background:rgba(46,127,200,.05)}
+.cal-cell.today .cal-num{background:var(--nav);color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.72rem}
+.cal-num{font-size:.72rem;font-weight:700;color:var(--t2);margin-bottom:3px;display:inline-block}
+.cal-cell:hover{background:#f7f9fc}
+/* Clean event pills */
+.cal-pill{display:flex;align-items:center;gap:4px;padding:2px 6px;border-radius:4px;margin-bottom:2px;cursor:pointer;transition:all .12s;max-width:100%}
+.cal-pill:hover{filter:brightness(.93)}
+.cal-pill-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.cal-pill-txt{font-size:.60rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+.pill-rdv{background:rgba(46,127,200,.1)}.pill-rdv .cal-pill-dot{background:var(--accent)}.pill-rdv .cal-pill-txt{color:var(--accent)}
+.pill-rappel{background:rgba(200,146,58,.1)}.pill-rappel .cal-pill-dot{background:var(--gold)}.pill-rappel .cal-pill-txt{color:var(--gold)}
+.pill-suivi{background:rgba(26,155,114,.1)}.pill-suivi .cal-pill-dot{background:var(--green)}.pill-suivi .cal-pill-txt{color:var(--green)}
+.pill-todo{background:rgba(217,79,61,.08)}.pill-todo .cal-pill-dot{background:var(--red)}.pill-todo .cal-pill-txt{color:var(--red)}
+.cal-more{font-size:.57rem;color:var(--t3);padding:1px 6px;font-weight:600;cursor:default}
+/* Today strip */
+.today-strip{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:11px 15px;margin-bottom:14px;display:none}
+.today-strip.show{display:block}
+.today-strip-lbl{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:8px}
+.ts-row{display:flex;align-items:center;gap:9px;padding:5px 8px;border-radius:7px;cursor:pointer;transition:background .1s;margin-bottom:2px}
+.ts-row:hover{background:var(--bg)}
+.ts-check{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.53rem;transition:.15s;cursor:pointer}
+.ts-check.ok{background:var(--green);border-color:var(--green);color:#fff}
+.ts-lbl{font-size:.78rem;flex:1;color:var(--t1)}
+.ts-client{font-size:.64rem;font-weight:600;color:var(--accent);white-space:nowrap}
+.ts-badge{font-size:.59rem;font-weight:700;padding:1px 6px;border-radius:20px;white-space:nowrap}
+.ev-rdv{background:rgba(46,127,200,.12);color:var(--accent)}
+.ev-rappel{background:rgba(200,146,58,.12);color:var(--gold)}
+.ev-suivi{background:rgba(26,155,114,.12);color:var(--green)}
+.ev-todo{background:rgba(217,79,61,.1);color:var(--red)}
+
+/* TASKS — grouped by client */
+.task-group{margin-bottom:14px}
+.task-group-hd{display:flex;align-items:center;gap:9px;padding:9px 13px;background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:9px 9px 0 0;cursor:pointer;transition:background .1s}
+.task-group-hd:hover{background:#e8eaef}
+.tg-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--green));display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;color:#fff;flex-shrink:0}
+.tg-name{font-weight:700;font-size:.82rem;color:var(--nav);flex:1}
+.tg-count{font-size:.61rem;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(217,79,61,.1);color:var(--red)}
+.tg-count.ok{background:rgba(26,155,114,.1);color:var(--green)}
+.task-group-bd{border:1px solid var(--border);border-radius:0 0 9px 9px;background:var(--card);overflow:hidden}
+.task-row{display:flex;align-items:flex-start;gap:10px;padding:9px 13px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.task-row:last-child{border-bottom:none}
+.task-row:hover{background:#fafbfd}
+.task-check-sq{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--border);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:.55rem;transition:.15s;cursor:pointer}
+.task-check-sq.done{background:var(--green);border-color:var(--green);color:#fff}
+.task-check-sq:hover:not(.done){border-color:var(--green)}
+.task-txt{font-size:.81rem;font-weight:500;color:var(--t1);flex:1;line-height:1.4}
+.task-txt.done{text-decoration:line-through;color:var(--t3)}
+.task-due{font-size:.65rem;color:var(--t3);white-space:nowrap;margin-top:3px}
+.task-due.ov{color:var(--red);font-weight:700}
+.task-exp{padding:0 13px 11px 38px;border-bottom:1px solid var(--border);background:#fafcff;display:none}
+.task-exp.open{display:block}
+.task-exp-txt{font-size:.77rem;line-height:1.65;color:var(--t2);background:var(--bg);border-radius:7px;padding:9px 11px;margin-bottom:8px}
+.orphan-hd{font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:7px;padding-left:2px}
+/* keep old classes for compat */
+.todo-check{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.55rem;transition:.15s;cursor:pointer}
+.todo-check.checked{background:var(--green);border-color:var(--green);color:#fff}
+
+/* CLIENTS */
+.clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:13px}
+.client-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:17px;cursor:pointer;transition:all .15s}
+.client-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(11,31,58,.1)}
+
+/* CLIENT DETAIL */
+.client-layout{display:grid;grid-template-columns:1fr 335px;gap:18px;align-items:start}
+.client-hero{background:linear-gradient(135deg,var(--nav) 0%,var(--nav2) 100%);border-radius:var(--r);padding:21px;margin-bottom:16px;display:flex;align-items:center;gap:15px;overflow:hidden;position:relative}
+.client-hero::after{content:'';position:absolute;right:-15px;top:-15px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.04)}
+.ch-avatar{width:50px;height:50px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--green));display:flex;align-items:center;justify-content:center;font-size:1.15rem;font-weight:800;color:#fff;flex-shrink:0}
+.ch-name{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:#fff}
+.ch-meta{font-size:.77rem;color:rgba(255,255,255,.5);margin-top:3px}
+.ch-stats{display:flex;gap:18px;margin-top:9px}
+.ch-stat-n{font-size:1rem;font-weight:700;color:#fff}
+.ch-stat-l{font-size:.62rem;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.38)}
+.call-item{padding:15px 17px;border-bottom:1px solid var(--border)}
+.call-item:last-child{border-bottom:none}
+.call-item-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.call-date{font-size:.74rem;font-weight:700;color:var(--accent)}
+.call-summary-txt{font-size:.81rem;line-height:1.55;color:var(--t2)}
+.call-tags{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.call-tag{font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:20px}
+.ct-action{background:rgba(200,146,58,.1);color:var(--gold)}
+.ct-rdv{background:rgba(46,127,200,.1);color:var(--accent)}
+.info-row{display:flex;align-items:flex-start;gap:8px;padding:8px 15px;border-bottom:1px solid var(--border);font-size:.79rem}
+.info-row:last-child{border-bottom:none}
+.info-lbl{color:var(--t3);min-width:78px;font-weight:500}
+.info-val{color:var(--t1);flex:1}
+
+/* GEMINI ZONE */
+.gemini-zone{border:2px dashed var(--border);border-radius:12px;padding:22px;text-align:center;transition:all .2s;cursor:pointer;background:rgba(255,255,255,.5)}
+.gemini-zone:hover,.gemini-zone.drag{border-color:var(--accent);background:rgba(46,127,200,.04)}
+.gemini-zone input[type=file]{display:none}
+.gz-icon{font-size:1.8rem;margin-bottom:8px}
+.gz-title{font-weight:700;font-size:.87rem;color:var(--nav);margin-bottom:3px}
+.gz-sub{font-size:.75rem;color:var(--t3)}
+
+/* Processing */
+.process-card{background:linear-gradient(135deg,var(--nav),var(--nav2));border-radius:12px;padding:20px;display:none}
+.process-card.show{display:block}
+.process-title{font-family:'Syne',sans-serif;font-weight:800;font-size:.93rem;color:#fff;margin-bottom:14px}
+.process-step{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:.82rem;color:rgba(255,255,255,.38);transition:color .3s}
+.process-step.active{color:#fff}.process-step.done{color:rgba(255,255,255,.85)}
+.step-ico{width:18px;text-align:center;flex-shrink:0;font-size:.82rem}
+.spinner{width:13px;height:13px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Result */
+.result-card{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:20px;display:none}
+.result-card.show{display:block}
+.result-section{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:8px}
+.result-text{font-size:.83rem;line-height:1.7;color:var(--t2);background:var(--bg);border-radius:9px;padding:13px;margin-bottom:14px}
+.result-action{display:flex;align-items:flex-start;gap:7px;font-size:.81rem;color:var(--t2);padding:7px 11px;background:rgba(200,146,58,.07);border-radius:8px;border-left:3px solid var(--gold);margin-bottom:6px}
+.result-event{display:flex;align-items:center;gap:9px;padding:9px 13px;background:rgba(46,127,200,.07);border-radius:8px;border-left:3px solid var(--accent);margin-bottom:6px;font-size:.81rem;color:var(--t2)}
+.result-event-dt{font-weight:700;color:var(--accent);min-width:75px}
+.no-api-banner{background:rgba(217,79,61,.07);border:1px solid rgba(217,79,61,.18);border-radius:9px;padding:11px 14px;display:flex;align-items:center;gap:9px;font-size:.79rem;color:var(--red);margin-bottom:14px}
+
+/* EMPTY */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:46px 20px;text-align:center;flex:1}
+.empty-icon{font-size:2.2rem;margin-bottom:11px;opacity:.38}
+.empty-title{font-family:'Syne',sans-serif;font-size:.93rem;font-weight:800;color:var(--nav);margin-bottom:5px}
+.empty-sub{font-size:.79rem;color:var(--t3);max-width:240px;line-height:1.5}
+
+/* MODALS */
+.modal{position:fixed;inset:0;background:rgba(11,31,58,.58);backdrop-filter:blur(4px);z-index:2000;display:none;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-box{background:var(--card);border-radius:16px;padding:26px;max-width:460px;width:92%;box-shadow:0 24px 60px rgba(11,31,58,.22);animation:popIn .22s cubic-bezier(.22,.68,0,1.2)}
+.modal-box.wide{max-width:560px}
+@keyframes popIn{from{opacity:0;transform:scale(.94) translateY(8px)}to{opacity:1;transform:none}}
+.modal-title{font-family:'Syne',sans-serif;font-size:1.12rem;font-weight:800;color:var(--nav);margin-bottom:4px}
+.modal-sub{font-size:.79rem;color:var(--t3);margin-bottom:17px;line-height:1.5}
+.modal-close{float:right;color:var(--t3);font-size:1.05rem;cursor:pointer;margin-top:-2px}
+.modal-footer{display:flex;gap:8px;margin-top:17px}
+.form-lbl{font-size:.73rem;font-weight:600;color:var(--t2);margin-bottom:5px;display:block}
+.form-ctrl{width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);font-size:.82rem;transition:.15s;color:var(--t1);background:var(--card)}
+.form-ctrl:focus{border-color:var(--accent)}
+textarea.form-ctrl{resize:vertical}
+.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.form-grp{margin-bottom:10px}
+.ev-dl{color:var(--t3);min-width:80px;font-weight:500}
+.ev-dv{color:var(--t1);flex:1}
+.ev-row{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.81rem}
+.ev-row:last-child{border-bottom:none}
+.ev-badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:.69rem;font-weight:700;margin-bottom:10px}
+
+/* DASHBOARD */
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:15px 17px}
+.stat-num{font-family:'Syne',sans-serif;font-size:1.45rem;font-weight:800;color:var(--nav)}
+.stat-lbl{font-size:.7rem;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.stat-sub{font-size:.76rem;color:var(--t2);margin-top:5px}
+
+/* TOASTS */
+#toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:6px;align-items:center}
+.toast{background:var(--nav);color:#fff;padding:9px 17px;border-radius:8px;font-size:.79rem;font-weight:500;white-space:nowrap;animation:toastIn .2s ease;box-shadow:0 6px 20px rgba(11,31,58,.2)}
+.toast.ok{background:var(--green)}.toast.err{background:var(--red)}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* OVERLAY */
+.overlay{position:fixed;inset:0;background:rgba(11,31,58,.52);backdrop-filter:blur(4px);z-index:1500;display:none;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.overlay-box{background:var(--card);border-radius:16px;padding:26px;max-width:500px;width:92%;box-shadow:0 24px 60px rgba(11,31,58,.2);animation:popIn .22s cubic-bezier(.22,.68,0,1.2)}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">⚓ Filovent AI</div>
+    <div class="sb-sub">Outil commercial interne</div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-section">Navigation</div>
+    <button class="sb-btn active" onclick="nav('dashboard')" id="nb-dashboard"><span class="icon">📊</span>Tableau de bord</button>
+    <button class="sb-btn" onclick="nav('calendar')" id="nb-calendar"><span class="icon">📅</span>Agenda <span class="sb-badge" id="bdg-events">0</span></button>
+    <button class="sb-btn" onclick="nav('todo')" id="nb-todo"><span class="icon">✅</span>Mes tâches <span class="sb-badge" id="bdg-todos">0</span></button>
+    <button class="sb-btn" onclick="nav('clients')" id="nb-clients"><span class="icon">👥</span>Clients <span class="sb-badge gold" id="bdg-clients">0</span></button>
+    <div class="sb-section" style="margin-top:4px">Accès rapide</div>
+    <div class="sb-search"><input type="text" placeholder="Chercher un client…" oninput="filterSb(this.value)" id="sb-search"></div>
+    <div id="sb-clients"></div>
+  </div>
+  <div class="sb-footer">
+    <div class="api-btn" onclick="openApiModal()">
+      <div class="api-dot" id="api-dot"></div>
+      <div class="api-txt" id="api-txt">Clé Gemini non configurée</div>
+      <span style="font-size:.7rem;color:rgba(255,255,255,.24)">⚙</span>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div id="content">
+  <div id="topbar">
+    <div class="tb-title" id="tb-title">Tableau de bord</div>
+    <div class="tb-actions">
+      <button class="btn btn-outline" onclick="openAddClientModal()">＋ Client</button>
+      <button class="btn btn-outline" onclick="openAddEventModal()">＋ Événement</button>
+      <button class="btn btn-navy" onclick="openAddTodoModal()">＋ Tâche</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="panel active" id="panel-dashboard">
+    <div class="panel-scroll">
+      <div class="three-col" style="margin-bottom:18px" id="dash-stats"></div>
+      <div class="two-col">
+        <div>
+          <div class="card" style="margin-bottom:14px">
+            <div class="card-hd"><div class="card-title">📋 Tâches du jour</div><button class="btn btn-outline" style="font-size:.72rem;padding:4px 10px" onclick="nav('todo')">Tout voir →</button></div>
+            <div id="dash-todos"></div>
+          </div>
+          <div class="card">
+            <div class="card-hd"><div class="card-title">📞 Derniers appels</div></div>
+            <div id="dash-calls"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-hd"><div class="card-title">📅 Prochains événements</div><button class="btn btn-outline" style="font-size:.72rem;padding:4px 10px" onclick="nav('calendar')">Agenda →</button></div>
+            <div id="dash-events"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="panel" id="panel-calendar">
+    <div class="panel-scroll">
+      <!-- Today strip -->
+      <div class="today-strip" id="today-strip">
+        <div class="today-strip-lbl" id="today-strip-lbl">Aujourd'hui</div>
+        <div id="today-strip-items"></div>
+      </div>
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="calNav(-1)">‹</button>
+        <div class="cal-month" id="cal-month">—</div>
+        <button class="cal-nav-btn" onclick="calNav(1)">›</button>
+        <div class="cal-vtoggle">
+          <button class="cal-vbtn active" onclick="setCalView('month',this)">Mois</button>
+          <button class="cal-vbtn" onclick="setCalView('week',this)">Semaine</button>
+        </div>
+        <button class="btn btn-outline" onclick="openAddEventModal()">＋ Événement</button>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-head">
+          <div class="cal-dh">Lun</div><div class="cal-dh">Mar</div><div class="cal-dh">Mer</div>
+          <div class="cal-dh">Jeu</div><div class="cal-dh">Ven</div>
+          <div class="cal-dh" style="color:var(--red)">Sam</div>
+          <div class="cal-dh" style="color:var(--red)">Dim</div>
+        </div>
+        <div class="cal-body" id="cal-body"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TODO — grouped by client -->
+  <div class="panel" id="panel-todo">
+    <div class="panel-scroll" style="max-width:760px">
+      <div id="todo-overdue-sec" style="display:none;margin-bottom:4px">
+        <div style="font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--red);margin-bottom:8px">⚠ En retard <span id="overdue-count" style="background:rgba(217,79,61,.1);padding:1px 7px;border-radius:20px"></span></div>
+        <div id="todo-overdue-list"></div>
+      </div>
+      <div id="todo-today-sec" style="display:none;margin-bottom:4px">
+        <div style="font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:8px">☀ Aujourd'hui</div>
+        <div id="todo-today-list"></div>
+      </div>
+      <div id="todo-upcoming-sec" style="margin-bottom:4px">
+        <div style="font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:8px">📅 À venir</div>
+        <div id="todo-upcoming-list"></div>
+      </div>
+      <div id="todo-done-sec" style="margin-top:14px;display:none">
+        <div style="font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:8px;cursor:pointer" onclick="toggleDoneSec()">✅ Terminées <span id="done-chevron">▸</span></div>
+        <div id="todo-done-list" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENTS -->
+  <div class="panel" id="panel-clients">
+    <div class="panel-scroll"><div id="clients-inner"></div></div>
+  </div>
+
+  <!-- CLIENT DETAIL -->
+  <div class="panel" id="panel-client-detail">
+    <div class="panel-scroll"><div id="client-detail-inner"></div></div>
+  </div>
+</div>
+</div>
+
+<!-- MODALS -->
+
+<!-- API KEY -->
+<div class="modal" id="modal-api">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-api')">✕</button>
+    <div class="modal-title">🔑 Clé API Gemini</div>
+    <div class="modal-sub">Obtenez votre clé gratuite sur <strong>aistudio.google.com</strong> → "Get API Key".<br>Stockée uniquement dans votre navigateur.</div>
+    <div class="form-grp"><label class="form-lbl">Clé API</label><input class="form-ctrl" type="password" id="api-key-input" placeholder="AIza…"></div>
+    <div style="background:var(--bg);border-radius:8px;padding:10px 13px;font-size:.73rem;color:var(--t3);line-height:1.5;margin-bottom:4px">⚠️ Réservé à un usage interne sur machine de confiance.</div>
+    <div class="modal-footer">
+      <button class="btn btn-navy" style="flex:1;justify-content:center" onclick="saveApiKey()">✓ Enregistrer</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-api')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD CLIENT -->
+<div class="modal" id="modal-add-client">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-add-client')">✕</button>
+    <div class="modal-title">👤 Nouveau client</div>
+    <div class="modal-sub">Créer une nouvelle fiche client.</div>
+    <div class="form-row2 form-grp">
+      <div><label class="form-lbl">Prénom *</label><input class="form-ctrl" id="ac-prenom" placeholder="Marie"></div>
+      <div><label class="form-lbl">Nom *</label><input class="form-ctrl" id="ac-nom" placeholder="Dupont"></div>
+    </div>
+    <div class="form-grp"><label class="form-lbl">Email</label><input class="form-ctrl" id="ac-email" placeholder="marie@email.com"></div>
+    <div class="form-grp"><label class="form-lbl">Téléphone</label><input class="form-ctrl" id="ac-phone" placeholder="+33 6 …"></div>
+    <div class="form-grp"><label class="form-lbl">Intérêts / Projet</label><input class="form-ctrl" id="ac-interests" placeholder="ex: Catamaran Croatie juillet"></div>
+    <div class="modal-footer">
+      <button class="btn btn-navy" style="flex:1;justify-content:center" onclick="addClient()">Créer la fiche</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-add-client')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD EVENT -->
+<div class="modal" id="modal-add-event">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-add-event')">✕</button>
+    <div class="modal-title">📅 Nouvel événement</div>
+    <div class="modal-sub">Ajouter un RDV, rappel ou suivi au calendrier.</div>
+    <div class="form-grp"><label class="form-lbl">Titre *</label><input class="form-ctrl" id="ev-title" placeholder="ex: RDV Marie Dupont"></div>
+    <div class="form-row2 form-grp">
+      <div><label class="form-lbl">Date *</label><input class="form-ctrl" type="date" id="ev-date"></div>
+      <div><label class="form-lbl">Heure</label><input class="form-ctrl" type="time" id="ev-time"></div>
+    </div>
+    <div class="form-row2 form-grp">
+      <div><label class="form-lbl">Type</label>
+        <select class="form-ctrl" id="ev-type">
+          <option value="rdv">📅 Rendez-vous</option>
+          <option value="rappel">🔔 Rappel relance</option>
+          <option value="suivi">📋 Suivi dossier</option>
+        </select>
+      </div>
+      <div><label class="form-lbl">Client lié</label><select class="form-ctrl" id="ev-client"></select></div>
+    </div>
+    <div class="form-grp"><label class="form-lbl">Notes</label><textarea class="form-ctrl" id="ev-notes" rows="2" placeholder="Contexte…"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-navy" style="flex:1;justify-content:center" onclick="addEvent()">Ajouter au calendrier</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-add-event')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD TODO -->
+<div class="modal" id="modal-add-todo">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-add-todo')">✕</button>
+    <div class="modal-title">✅ Nouvelle tâche</div>
+    <div class="modal-sub">Ajouter une action à votre liste.</div>
+    <div class="form-grp"><label class="form-lbl">Description *</label><input class="form-ctrl" id="td-text" placeholder="ex: Envoyer devis catamaran"></div>
+    <div class="form-grp"><label class="form-lbl">Détails / Précisions</label><textarea class="form-ctrl" id="td-details" rows="2" placeholder="Informations complémentaires…"></textarea></div>
+    <div class="form-row2 form-grp">
+      <div><label class="form-lbl">Échéance</label><input class="form-ctrl" type="date" id="td-date"></div>
+      <div><label class="form-lbl">Client lié</label><select class="form-ctrl" id="td-client"></select></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-navy" style="flex:1;justify-content:center" onclick="addTodo()">Créer la tâche</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-add-todo')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT DETAIL -->
+<div class="modal" id="modal-event-detail">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-event-detail')">✕</button>
+    <div id="modal-event-content"></div>
+  </div>
+</div>
+
+<!-- ADD CALL manuel -->
+<div class="modal" id="modal-add-call">
+  <div class="modal-box wide">
+    <button class="modal-close" onclick="closeModal('modal-add-call')">✕</button>
+    <div class="modal-title">📞 Compte-rendu d'appel</div>
+    <div class="modal-sub" id="add-call-name">Client</div>
+    <div class="form-row2 form-grp">
+      <div><label class="form-lbl">Date *</label><input class="form-ctrl" type="date" id="call-date"></div>
+      <div><label class="form-lbl">Durée</label><input class="form-ctrl" id="call-duration" placeholder="ex: 12 min"></div>
+    </div>
+    <div class="form-grp"><label class="form-lbl">Résumé *</label><textarea class="form-ctrl" id="call-summary" rows="3" placeholder="Ce qui a été dit, besoins, réactions…"></textarea></div>
+    <div class="form-grp"><label class="form-lbl">Actions à faire (1 par ligne)</label><textarea class="form-ctrl" id="call-actions" rows="2" placeholder="Envoyer devis&#10;Rappeler dans 5 jours"></textarea></div>
+    <div class="form-grp">
+      <label class="form-lbl">RDV fixé ?</label>
+      <div style="display:flex;gap:10px;align-items:center">
+        <input class="form-ctrl" type="date" id="call-rdv-date" style="flex:1">
+        <input class="form-ctrl" type="time" id="call-rdv-time" style="width:105px">
+        <span style="font-size:.73rem;color:var(--t3);white-space:nowrap">optionnel</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-navy" style="flex:1;justify-content:center" onclick="saveCall()">Enregistrer l'appel</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-add-call')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE -->
+<div class="modal" id="modal-confirm-del">
+  <div class="modal-box" style="border-top:4px solid var(--red)">
+    <button class="modal-close" onclick="closeModal('modal-confirm-del')">✕</button>
+    <div class="modal-title">⚠️ Supprimer ce client ?</div>
+    <div class="modal-sub" id="confirm-del-msg">Action irréversible.</div>
+    <div class="modal-footer">
+      <button class="btn btn-red" style="flex:1;justify-content:center" onclick="confirmDelClient()">Supprimer définitivement</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-confirm-del')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- TODO DETAIL -->
+<div class="overlay" id="ov-todo">
+  <div class="overlay-box">
+    <button style="float:right;color:var(--t3);font-size:1rem;cursor:pointer" onclick="closeOverlay('ov-todo')">✕</button>
+    <div id="todo-detail-content"></div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+const S = {
+  apiKey:'', clients:{}, events:[], todos:[],
+  calDate:new Date(), calView:'month',
+  currentClient:null, pendingDelKey:null, currentCallClient:null, todoFilter:'all'
+};
+
+function save() {
+  localStorage.setItem('filo_clients', JSON.stringify(S.clients));
+  localStorage.setItem('filo_events',  JSON.stringify(S.events));
+  localStorage.setItem('filo_todos',   JSON.stringify(S.todos));
+  localStorage.setItem('filo_api_key', S.apiKey);
+}
+function load() {
+  try {
+    S.apiKey = localStorage.getItem('filo_api_key') || '';
+    const c = localStorage.getItem('filo_clients'); if(c) S.clients = JSON.parse(c);
+    const e = localStorage.getItem('filo_events');  if(e) S.events  = JSON.parse(e);
+    const t = localStorage.getItem('filo_todos');   if(t) S.todos   = JSON.parse(t);
+  } catch(err){ console.error(err); }
+}
+
+/* ══════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════ */
+const uid  = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const cKey = (p,n) => (p+'_'+n).toLowerCase().replace(/\s+/g,'_');
+const ini  = (p,n='') => ((p||'')[0]||'').toUpperCase()+((n||'')[0]||'').toUpperCase();
+const toStr= () => new Date().toISOString().split('T')[0];
+const dFr  = d => { if(!d) return '—'; const [y,m,dd]=d.split('-'); const M=['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc']; return `${parseInt(dd)} ${M[parseInt(m)-1]} ${y}`; };
+const past = d => d && d < toStr();
+
+function toast(msg, type='') {
+  const el = document.createElement('div');
+  el.className='toast '+type; el.textContent=msg;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(()=>el.remove(), 3500);
+}
+
+/* ══════════════════════════════════════════
+   NAV
+══════════════════════════════════════════ */
+const PANELS=['dashboard','calendar','todo','clients','client-detail'];
+const TITLES={dashboard:'Tableau de bord',calendar:'Agenda',todo:'Mes tâches',clients:'Clients','client-detail':'Fiche client'};
+
+function nav(name) {
+  PANELS.forEach(p=>document.getElementById('panel-'+p).classList.remove('active'));
+  ['dashboard','calendar','todo','clients'].forEach(n=>{ const b=document.getElementById('nb-'+n); if(b) b.classList.remove('active'); });
+  document.getElementById('panel-'+name).classList.add('active');
+  const nb=document.getElementById('nb-'+name); if(nb) nb.classList.add('active');
+  document.getElementById('tb-title').textContent=TITLES[name]||name;
+  if(name==='calendar'){renderCalendar();renderTodayStrip();}
+  if(name==='todo') renderTodos();
+  if(name==='dashboard') renderDashboard();
+  if(name==='clients') renderClientsGrid();
+}
+
+/* ══════════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════════ */
+function renderSb(filter='') {
+  const el=document.getElementById('sb-clients');
+  const keys=Object.keys(S.clients)
+    .filter(k=>!filter||S.clients[k].name.toLowerCase().includes(filter.toLowerCase()))
+    .sort((a,b)=>lastCallDate(b).localeCompare(lastCallDate(a)));
+  if(!keys.length){el.innerHTML='<div class="sb-empty">Aucun client</div>';return;}
+  el.innerHTML=keys.slice(0,15).map(k=>{
+    const c=S.clients[k]; const pd=pendingCount(k);
+    return `<div class="sb-client ${S.currentClient===k?'active':''}" onclick="openClientDetail('${k}')">
+      <div class="sb-avatar">${ini(c.prenom,c.nom)}</div>
+      <div style="flex:1;min-width:0"><div class="sb-cname">${c.name}</div><div class="sb-cmeta">${(c.calls||[]).length} appel(s)</div></div>
+      ${pd>0?`<div class="sb-badge">${pd}</div>`:''}
+    </div>`;
+  }).join('');
+}
+function filterSb(v){renderSb(v);}
+function lastCallDate(k){const calls=S.clients[k]?.calls||[];return calls.length?calls[calls.length-1].date:'';}
+function pendingCount(k){return S.todos.filter(t=>t.clientKey===k&&!t.done).length;}
+
+function updateBadges() {
+  const today=toStr();
+  document.getElementById('bdg-events').textContent=S.events.filter(e=>e.date>=today).length;
+  document.getElementById('bdg-todos').textContent=S.todos.filter(t=>!t.done).length;
+  document.getElementById('bdg-clients').textContent=Object.keys(S.clients).length;
+  renderSb(document.getElementById('sb-search')?.value||'');
+}
+
+/* ══════════════════════════════════════════
+   API KEY
+══════════════════════════════════════════ */
+function openApiModal(){document.getElementById('api-key-input').value=S.apiKey;openModal('modal-api');}
+function saveApiKey(){
+  S.apiKey=document.getElementById('api-key-input').value.trim();
+  save();updateApiDot();closeModal('modal-api');
+  toast(S.apiKey?'✅ Clé Gemini enregistrée':'Clé supprimée',S.apiKey?'ok':'');
+}
+function updateApiDot(){
+  const dot=document.getElementById('api-dot'),txt=document.getElementById('api-txt');
+  if(S.apiKey){dot.classList.add('ok');txt.textContent='Gemini connecté';}
+  else{dot.classList.remove('ok');txt.textContent='Clé Gemini non configurée';}
+}
+
+/* ══════════════════════════════════════════
+   DASHBOARD
+══════════════════════════════════════════ */
+function renderDashboard(){
+  const today=toStr();
+  const todayTodos=S.todos.filter(t=>!t.done&&t.dueDate<=today);
+  const upEv=S.events.filter(e=>e.date>=today).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,6);
+  const totalCalls=Object.values(S.clients).reduce((a,c)=>a+(c.calls||[]).length,0);
+  const overdue=S.todos.filter(t=>!t.done&&t.dueDate&&t.dueDate<today).length;
+  const pending=S.todos.filter(t=>!t.done).length;
+
+  document.getElementById('dash-stats').innerHTML=`
+    <div class="stat-card"><div class="stat-num">${Object.keys(S.clients).length}</div><div class="stat-lbl">Clients actifs</div><div class="stat-sub">${totalCalls} appel(s) total</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--red)">${pending}</div><div class="stat-lbl">Tâches en attente</div><div class="stat-sub">${overdue>0?`<span style="color:var(--red)">⚠ ${overdue} en retard</span>`:'Aucun retard ✓'}</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--accent)">${upEv.length}</div><div class="stat-lbl">Événements à venir</div><div class="stat-sub">${upEv.length?'Prochain : '+dFr(upEv[0].date):'Calendrier vide'}</div></div>`;
+
+  const dtEl=document.getElementById('dash-todos');
+  if(!todayTodos.length){dtEl.innerHTML='<div class="empty" style="padding:22px"><div class="empty-icon">🎉</div><div class="empty-title">Rien pour aujourd\'hui !</div></div>';}
+  else{dtEl.innerHTML=todayTodos.slice(0,5).map(t=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:9px 15px;border-bottom:1px solid var(--border);cursor:pointer" onclick="openTodoDetail('${t.id}')">
+      <div class="todo-check ${t.done?'checked':''}" onclick="event.stopPropagation();toggleTodo('${t.id}')">✓</div>
+      <div style="flex:1;min-width:0"><div style="font-size:.82rem;font-weight:500">${t.text}</div>
+      <div style="font-size:.71rem;color:var(--t3)">${t.clientKey?(S.clients[t.clientKey]?.name||''):''}${t.dueDate?' · '+dFr(t.dueDate):''}</div></div>
+    </div>`).join('');}
+
+  const allCalls=[];
+  Object.entries(S.clients).forEach(([k,c])=>(c.calls||[]).forEach(call=>allCalls.push({...call,clientName:c.name,clientKey:k})));
+  allCalls.sort((a,b)=>b.date.localeCompare(a.date));
+  const dcEl=document.getElementById('dash-calls');
+  if(!allCalls.length){dcEl.innerHTML='<div class="empty" style="padding:20px"><div class="empty-icon">📞</div><div class="empty-title">Aucun appel</div></div>';}
+  else{dcEl.innerHTML=allCalls.slice(0,4).map(c=>`
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer" onclick="openClientDetail('${c.clientKey}')">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <div style="font-size:.73rem;font-weight:700;color:var(--accent)">📞 ${dFr(c.date)}</div>
+        <div style="font-size:.72rem;color:var(--accent);font-weight:600">${c.clientName}</div>
+      </div>
+      <div style="font-size:.8rem;line-height:1.5;color:var(--t2)">${c.summary||'—'}</div>
+    </div>`).join('');}
+
+  const deEl=document.getElementById('dash-events');
+  if(!upEv.length){deEl.innerHTML='<div class="empty" style="padding:20px"><div class="empty-icon">📅</div><div class="empty-title">Aucun événement</div></div>';}
+  else{const tC={rdv:'ev-rdv',rappel:'ev-rappel',suivi:'ev-suivi'};const tL={rdv:'RDV',rappel:'Rappel',suivi:'Suivi'};
+  deEl.innerHTML=upEv.map(ev=>`
+    <div style="padding:11px 16px;border-bottom:1px solid var(--border);cursor:pointer" onclick="openEventDetail('${ev.id}')">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
+        <div style="font-size:.72rem;font-weight:700;color:var(--accent)">${dFr(ev.date)}${ev.time?' · '+ev.time:''}</div>
+        <span class="cal-ev ${tC[ev.type]||'ev-rdv'}" style="margin:0">${tL[ev.type]||ev.type}</span>
+      </div>
+      <div style="font-size:.82rem;font-weight:500;color:var(--t1)">${ev.title}</div>
+      ${ev.client?`<div style="font-size:.71rem;color:var(--t3)">${ev.client}</div>`:''}
+    </div>`).join('');}
+}
+
+/* ══════════════════════════════════════════
+   CALENDAR
+══════════════════════════════════════════ */
+function calNav(d){if(S.calView==='month')S.calDate.setMonth(S.calDate.getMonth()+d);else S.calDate.setDate(S.calDate.getDate()+d*7);renderCalendar();}
+function setCalView(v,btn){S.calView=v;document.querySelectorAll('.cal-vbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderCalendar();}
+function renderCalendar(){
+  const d=S.calDate;
+  const M=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  document.getElementById('cal-month').textContent=M[d.getMonth()]+' '+d.getFullYear();
+  const body=document.getElementById('cal-body');body.innerHTML='';
+  const todayTs=new Date(toStr()).getTime();
+
+  const buildCell=(cd,extra='')=>{
+    const isToday=cd.getTime()===todayTs;
+    const dk=cd.toISOString().split('T')[0];
+    const cell=document.createElement('div');
+    cell.className='cal-cell'+extra+(isToday?' today':'');
+    const num=document.createElement('div');num.className='cal-num';num.textContent=cd.getDate();cell.appendChild(num);
+
+    const dayEvents=S.events.filter(e=>e.date===dk).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+    const dayTodos=S.todos.filter(t=>t.dueDate===dk&&!t.done);
+    const MAX=3; let shown=0;
+
+    dayEvents.forEach(ev=>{
+      if(shown>=MAX)return;
+      const pill=document.createElement('div');
+      const pc={rdv:'pill-rdv',rappel:'pill-rappel',suivi:'pill-suivi'}[ev.type]||'pill-rdv';
+      pill.className='cal-pill '+pc;
+      // Show client name if available, else short title
+      const lbl=ev.client||(ev.title.length>18?ev.title.slice(0,17)+'…':ev.title);
+      const prefix=ev.time?ev.time+' ':({rdv:'RDV ',rappel:'⏰ ',suivi:'📋 '}[ev.type]||'');
+      pill.innerHTML=`<div class="cal-pill-dot"></div><div class="cal-pill-txt">${prefix}${lbl}</div>`;
+      pill.onclick=e=>{e.stopPropagation();openEventDetail(ev.id);};
+      cell.appendChild(pill);shown++;
+    });
+
+    dayTodos.forEach(td=>{
+      if(shown>=MAX)return;
+      const pill=document.createElement('div');pill.className='cal-pill pill-todo';
+      const cl=td.clientKey?S.clients[td.clientKey]?.name:'';
+      pill.innerHTML=`<div class="cal-pill-dot"></div><div class="cal-pill-txt">${cl||td.text}</div>`;
+      pill.onclick=e=>{e.stopPropagation();openTodoDetail(td.id);};
+      cell.appendChild(pill);shown++;
+    });
+
+    const total=dayEvents.length+dayTodos.length;
+    if(total>MAX){
+      const m=document.createElement('div');m.className='cal-more';
+      m.textContent=`+${total-MAX}`;cell.appendChild(m);
+    }
+    return cell;
+  };
+  if(S.calView==='month'){
+    const first=new Date(d.getFullYear(),d.getMonth(),1);let dow=first.getDay();dow=dow===0?6:dow-1;
+    const dim=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+    const total=Math.ceil((dow+dim)/7)*7;
+    for(let i=0;i<total;i++){const cd=new Date(d.getFullYear(),d.getMonth(),1-dow+i);body.appendChild(buildCell(cd,cd.getMonth()!==d.getMonth()?' other':''));}
+  } else {
+    const ws=new Date(d);let dow=ws.getDay();dow=dow===0?6:dow-1;ws.setDate(ws.getDate()-dow);
+    for(let i=0;i<7;i++){const cd=new Date(ws);cd.setDate(ws.getDate()+i);const c=buildCell(cd);c.style.minHeight='140px';body.appendChild(c);}
+  }
+  renderTodayStrip();
+}
+
+function renderTodayStrip(){
+  const today=toStr();
+  const strip=document.getElementById('today-strip');
+  const lbl=document.getElementById('today-strip-lbl');
+  const items=document.getElementById('today-strip-items');
+  if(!strip)return;
+  lbl.textContent='Aujourd\'hui — '+dFr(today);
+  const todayEv=S.events.filter(e=>e.date===today);
+  const todayTd=S.todos.filter(t=>t.dueDate===today&&!t.done);
+  const overdueT=S.todos.filter(t=>!t.done&&t.dueDate&&t.dueDate<today).slice(0,3);
+  const all=[...overdueT,...todayEv.map(e=>({...e,_ev:true})),...todayTd];
+  if(!all.length){strip.classList.remove('show');return;}
+  strip.classList.add('show');
+  items.innerHTML=all.slice(0,7).map(item=>{
+    if(item._ev){
+      const tL={rdv:'RDV',rappel:'Rappel',suivi:'Suivi'};
+      return `<div class="ts-row" onclick="openEventDetail('${item.id}')">
+        <div class="ts-check" style="background:rgba(46,127,200,.12);border-color:var(--accent);color:var(--accent);font-size:.6rem">📅</div>
+        <div class="ts-lbl">${item.title}</div>
+        ${item.time?`<span style="font-size:.64rem;color:var(--t3)">${item.time}</span>`:''}
+        <span class="ts-badge" style="background:rgba(46,127,200,.1);color:var(--accent)">${tL[item.type]||'RDV'}</span>
+      </div>`;
+    }
+    const ov=item.dueDate<today;
+    const cl=item.clientKey?S.clients[item.clientKey]?.name:'';
+    return `<div class="ts-row" onclick="openTodoDetail('${item.id}')">
+      <div class="ts-check ${item.done?'ok':''}" onclick="event.stopPropagation();quickToggleTodo('${item.id}')">✓</div>
+      <div class="ts-lbl ${ov?'':''}"><span style="${ov?'color:var(--red);font-weight:700':''}">${ov?'⚠ ':''}${item.text}</span></div>
+      ${cl?`<span class="ts-client">${cl}</span>`:''}
+      <span class="ts-badge" style="background:rgba(217,79,61,.08);color:var(--red)">Tâche</span>
+    </div>`;
+  }).join('');
+}
+function quickToggleTodo(id){const t=S.todos.find(x=>x.id===id);if(t){t.done=!t.done;save();updateBadges();renderTodayStrip();renderTodos();}}
+
+/* ══════════════════════════════════════════
+   EVENTS
+══════════════════════════════════════════ */
+function openAddEventModal(pf=''){
+  document.getElementById('ev-client').innerHTML='<option value="">— Aucun —</option>'+Object.values(S.clients).map(c=>`<option value="${cKey(c.prenom,c.nom)}">${c.name}</option>`).join('');
+  document.getElementById('ev-title').value='';document.getElementById('ev-date').value=pf||toStr();
+  document.getElementById('ev-time').value='';document.getElementById('ev-type').value='rdv';document.getElementById('ev-notes').value='';
+  openModal('modal-add-event');
+}
+function addEvent(){
+  const title=document.getElementById('ev-title').value.trim();const date=document.getElementById('ev-date').value;
+  if(!title||!date){toast('Titre et date requis','err');return;}
+  const ck=document.getElementById('ev-client').value;
+  S.events.push({id:uid(),title,date,time:document.getElementById('ev-time').value,type:document.getElementById('ev-type').value,notes:document.getElementById('ev-notes').value.trim(),client:ck?S.clients[ck]?.name:'',clientKey:ck||''});
+  save();updateBadges();renderCalendar();renderDashboard();closeModal('modal-add-event');toast('Événement ajouté ✓','ok');
+}
+function openEventDetail(id){
+  const ev=S.events.find(e=>e.id===id);if(!ev)return;
+  const tL={rdv:'📅 Rendez-vous',rappel:'🔔 Rappel',suivi:'📋 Suivi'};const tC={rdv:'ev-rdv',rappel:'ev-rappel',suivi:'ev-suivi'};
+  document.getElementById('modal-event-content').innerHTML=`
+    <span class="ev-badge ${tC[ev.type]||'ev-rdv'}" style="background:rgba(46,127,200,.1);color:var(--accent)">${tL[ev.type]||ev.type}</span>
+    <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--nav);margin-bottom:13px">${ev.title}</div>
+    <div class="ev-row"><div class="ev-dl">📅 Date</div><div class="ev-dv">${dFr(ev.date)}</div></div>
+    ${ev.time?`<div class="ev-row"><div class="ev-dl">⏰ Heure</div><div class="ev-dv">${ev.time}</div></div>`:''}
+    ${ev.client?`<div class="ev-row"><div class="ev-dl">👤 Client</div><div class="ev-dv">${ev.client}</div></div>`:''}
+    ${ev.notes?`<div class="ev-row"><div class="ev-dl">📝 Notes</div><div class="ev-dv">${ev.notes}</div></div>`:''}
+    <button class="btn btn-red" style="margin-top:16px;width:100%;justify-content:center" onclick="deleteEvent('${ev.id}')">🗑 Supprimer</button>`;
+  openModal('modal-event-detail');
+}
+function deleteEvent(id){S.events=S.events.filter(e=>e.id!==id);save();updateBadges();renderCalendar();renderDashboard();closeModal('modal-event-detail');toast('Événement supprimé');}
+
+/* ══════════════════════════════════════════
+   TODOS
+══════════════════════════════════════════ */
+function openAddTodoModal(pc=''){
+  document.getElementById('td-client').innerHTML='<option value="">— Aucun —</option>'+Object.values(S.clients).map(c=>`<option value="${cKey(c.prenom,c.nom)}" ${cKey(c.prenom,c.nom)===pc?'selected':''}>${c.name}</option>`).join('');
+  document.getElementById('td-text').value='';document.getElementById('td-details').value='';document.getElementById('td-date').value=toStr();
+  openModal('modal-add-todo');
+}
+function addTodo(){
+  const text=document.getElementById('td-text').value.trim();if(!text){toast('Description requise','err');return;}
+  const ck=document.getElementById('td-client').value;
+  S.todos.push({id:uid(),text,details:document.getElementById('td-details').value.trim(),dueDate:document.getElementById('td-date').value,clientKey:ck||'',done:false,createdAt:toStr(),source:'manual'});
+  save();updateBadges();renderTodos();renderDashboard();closeModal('modal-add-todo');toast('Tâche ajoutée ✓','ok');
+}
+function toggleTodo(id){const t=S.todos.find(t=>t.id===id);if(t){t.done=!t.done;save();updateBadges();renderTodos();renderDashboard();}}
+
+function renderTodos(){
+  const today=toStr();
+  const pending=S.todos.filter(t=>!t.done);
+  const done=S.todos.filter(t=>t.done);
+  const overdue=pending.filter(t=>t.dueDate&&t.dueDate<today);
+  const todayT=pending.filter(t=>t.dueDate===today);
+  const upcoming=pending.filter(t=>!t.dueDate||t.dueDate>today);
+
+  const ovSec=document.getElementById('todo-overdue-sec');
+  const toSec=document.getElementById('todo-today-sec');
+  const dnSec=document.getElementById('todo-done-sec');
+  if(ovSec)ovSec.style.display=overdue.length?'':'none';
+  if(toSec)toSec.style.display=todayT.length?'':'none';
+  if(dnSec)dnSec.style.display=done.length?'':'none';
+  const oc=document.getElementById('overdue-count');if(oc)oc.textContent=overdue.length;
+
+  renderGroupedTasks('todo-overdue-list', overdue, true);
+  renderGroupedTasks('todo-today-list', todayT, false);
+  renderGroupedTasks('todo-upcoming-list', upcoming, false);
+  renderGroupedTasks('todo-done-list', done, false);
+}
+
+function renderGroupedTasks(containerId, todos, isOverdue){
+  const el=document.getElementById(containerId);
+  if(!el)return;
+  if(!todos.length){el.innerHTML=containerId==='todo-upcoming-list'?'<div style="padding:8px 2px;font-size:.76rem;color:var(--t3)">Aucune tâche à venir.</div>':'';return;}
+  const today=toStr();
+
+  // Group by client
+  const groups={};
+  todos.forEach(t=>{const gk=t.clientKey||'__none__';if(!groups[gk])groups[gk]=[];groups[gk].push(t);});
+
+  el.innerHTML='';
+  Object.entries(groups).forEach(([gk,tasks])=>{
+    const client=gk!=='__none__'?S.clients[gk]:null;
+    if(!client){
+      // Orphan tasks — flat list
+      const wrap=document.createElement('div');wrap.style.marginBottom='10px';
+      if(Object.keys(groups).length>1){const h=document.createElement('div');h.className='orphan-hd';h.textContent='Sans client';wrap.appendChild(h);}
+      tasks.forEach(t=>wrap.appendChild(buildTaskRow(t,isOverdue||(!t.done&&t.dueDate&&t.dueDate<today))));
+      el.appendChild(wrap);return;
+    }
+
+    // Client group card
+    const group=document.createElement('div');group.className='task-group';
+    const pendingN=tasks.filter(t=>!t.done).length;
+    const allDone=pendingN===0;
+    const hasOv=tasks.some(t=>!t.done&&t.dueDate&&t.dueDate<today);
+
+    const hd=document.createElement('div');hd.className='task-group-hd';
+    hd.innerHTML=`
+      <div class="tg-avatar">${ini(client.prenom,client.nom)}</div>
+      <div class="tg-name">${client.name}</div>
+      <div style="font-size:.67rem;color:var(--t3)">${tasks.length} tâche${tasks.length>1?'s':''}</div>
+      <div class="tg-count ${allDone?'ok':''}">${allDone?'✓ OK':hasOv?`⚠ ${pendingN}`:`${pendingN} à faire`}</div>
+      <span style="font-size:.72rem;color:var(--t3);margin-left:3px" class="grp-chev">▾</span>`;
+
+    const bd=document.createElement('div');bd.className='task-group-bd';
+    tasks.sort((a,b)=>a.done-b.done);
+    tasks.forEach(t=>bd.appendChild(buildTaskRow(t,isOverdue||(!t.done&&t.dueDate&&t.dueDate<today))));
+
+    hd.onclick=()=>{
+      const open=bd.style.display!=='none';
+      bd.style.display=open?'none':'block';
+      hd.querySelector('.grp-chev').textContent=open?'▸':'▾';
+    };
+    group.appendChild(hd);group.appendChild(bd);el.appendChild(group);
+  });
+}
+
+function buildTaskRow(t, isOverdue){
+  const wrap=document.createElement('div');
+  const row=document.createElement('div');row.className='task-row'+(t.done?' done':'');
+
+  const chk=document.createElement('div');chk.className='task-check-sq'+(t.done?' done':'');chk.innerHTML='✓';
+  chk.onclick=e=>{e.stopPropagation();toggleTodo(t.id);};
+
+  const txt=document.createElement('div');txt.className='task-txt'+(t.done?' done':'');txt.textContent=t.text;
+
+  const due=document.createElement('div');due.className='task-due'+(isOverdue&&!t.done?' ov':'');due.textContent=t.dueDate?dFr(t.dueDate):'';
+
+  row.appendChild(chk);row.appendChild(txt);row.appendChild(due);
+
+  // Expandable detail
+  const exp=document.createElement('div');exp.className='task-exp';
+  if(t.details){const dt=document.createElement('div');dt.className='task-exp-txt';dt.textContent=t.details;exp.appendChild(dt);}
+  const acts=document.createElement('div');acts.style.cssText='display:flex;gap:6px;flex-wrap:wrap';
+  acts.innerHTML=`
+    <button class="btn btn-navy" style="font-size:.69rem;padding:4px 10px" onclick="toggleTodo('${t.id}')">${t.done?'Rouvrir':'✓ Marquer faite'}</button>
+    <button class="btn btn-red" style="font-size:.69rem;padding:4px 8px" onclick="deleteTodo('${t.id}')">🗑</button>
+    ${t.clientKey?`<button class="btn btn-outline" style="font-size:.69rem;padding:4px 10px" onclick="openClientDetail('${t.clientKey}')">Fiche →</button>`:''}`;
+  exp.appendChild(acts);
+
+  row.onclick=()=>{
+    document.querySelectorAll('.task-exp.open').forEach(e=>{if(e!==exp)e.classList.remove('open');});
+    exp.classList.toggle('open');
+  };
+  wrap.appendChild(row);wrap.appendChild(exp);
+  return wrap;
+}
+
+function toggleDoneSec(){
+  const list=document.getElementById('todo-done-list');
+  const chev=document.getElementById('done-chevron');
+  const open=list.style.display!=='none';
+  list.style.display=open?'none':'block';
+  if(chev)chev.textContent=open?'▸':'▾';
+}
+function openTodoDetail(id){
+  const t=S.todos.find(x=>x.id===id);if(!t)return;
+  const cl=t.clientKey?S.clients[t.clientKey]:null;
+  document.getElementById('todo-detail-content').innerHTML=`
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:16px">
+      <div class="todo-check ${t.done?'checked':''}" onclick="toggleTodo('${t.id}');closeOverlay('ov-todo')" style="width:22px;height:22px;border-radius:6px;cursor:pointer">✓</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--nav);line-height:1.3;${t.done?'text-decoration:line-through;opacity:.5':''}">  ${t.text}</div>
+    </div>
+    ${t.details?`<div style="background:var(--bg);border-radius:8px;padding:12px;font-size:.82rem;line-height:1.6;color:var(--t2);margin-bottom:13px">${t.details}</div>`:''}
+    <div class="ev-row"><div class="ev-dl">📅 Échéance</div><div class="ev-dv">${dFr(t.dueDate)||'—'}</div></div>
+    ${cl?`<div class="ev-row"><div class="ev-dl">👤 Client</div><div class="ev-dv" style="cursor:pointer;color:var(--accent)" onclick="closeOverlay('ov-todo');openClientDetail('${t.clientKey}')">${cl.name} →</div></div>`:''}
+    <div class="ev-row"><div class="ev-dl">Statut</div><div class="ev-dv">${t.done?'<span style="color:var(--green);font-weight:700">✅ Terminée</span>':'<span style="color:var(--gold);font-weight:700">⏳ En attente</span>'}</div></div>
+    <div class="ev-row"><div class="ev-dl">Source</div><div class="ev-dv">${t.source==='auto'?'Générée automatiquement':'Manuelle'}</div></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-navy" style="flex:1;justify-content:center" onclick="toggleTodo('${t.id}');closeOverlay('ov-todo')">${t.done?'Rouvrir':'Marquer terminée'}</button>
+      <button class="btn btn-red" onclick="deleteTodo('${t.id}');closeOverlay('ov-todo')">🗑</button>
+    </div>`;
+  document.getElementById('ov-todo').classList.add('open');
+}
+function deleteTodo(id){S.todos=S.todos.filter(t=>t.id!==id);save();updateBadges();renderTodos();renderDashboard();toast('Tâche supprimée');}
+
+/* ══════════════════════════════════════════
+   CLIENTS
+══════════════════════════════════════════ */
+function openAddClientModal(){['ac-prenom','ac-nom','ac-email','ac-phone','ac-interests'].forEach(id=>document.getElementById(id).value='');openModal('modal-add-client');}
+function addClient(){
+  const prenom=document.getElementById('ac-prenom').value.trim();const nom=document.getElementById('ac-nom').value.trim();
+  if(!prenom||!nom){toast('Prénom et nom requis','err');return;}
+  const key=cKey(prenom,nom);if(S.clients[key]){toast('Ce client existe déjà','err');return;}
+  S.clients[key]={prenom,nom,name:prenom+' '+nom,email:document.getElementById('ac-email').value.trim(),phone:document.getElementById('ac-phone').value.trim(),interests:document.getElementById('ac-interests').value.trim(),calls:[],createdAt:toStr()};
+  save();updateBadges();renderClientsGrid();closeModal('modal-add-client');toast('Fiche créée : '+prenom+' '+nom,'ok');openClientDetail(key);
+}
+function renderClientsGrid(){
+  const keys=Object.keys(S.clients).sort((a,b)=>lastCallDate(b).localeCompare(lastCallDate(a)));
+  const el=document.getElementById('clients-inner');
+  if(!keys.length){el.innerHTML=`<div class="empty" style="height:60vh"><div class="empty-icon">👥</div><div class="empty-title">Aucun client</div><div class="empty-sub">Créez votre premier client avec le bouton + Client.</div></div>`;return;}
+  el.innerHTML=`<div class="clients-grid">${keys.map(k=>{
+    const c=S.clients[k];const pd=pendingCount(k);const lc=lastCallDate(k);
+    return `<div class="client-card" onclick="openClientDetail('${k}')">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:11px">
+        <div class="ch-avatar" style="width:42px;height:42px;font-size:.95rem">${ini(c.prenom,c.nom)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:.93rem;color:var(--nav)">${c.name}</div>
+          <div style="font-size:.7rem;color:var(--t3)">${lc?'Dernier appel : '+dFr(lc):'Aucun appel'}</div>
+        </div>${pd>0?`<div class="sb-badge">${pd}</div>`:''}
+      </div>
+      ${c.interests?`<div style="font-size:.76rem;color:var(--t2);background:var(--bg);padding:6px 9px;border-radius:7px;margin-bottom:8px">${c.interests}</div>`:''}
+      <div style="font-size:.71rem;color:var(--t3);display:flex;gap:10px"><span>${(c.calls||[]).length} appel(s)</span><span>·</span><span>${S.events.filter(e=>e.clientKey===k).length} événement(s)</span></div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+/* ══════════════════════════════════════════
+   CLIENT DETAIL
+══════════════════════════════════════════ */
+function openClientDetail(key){
+  const c=S.clients[key];if(!c)return;
+  S.currentClient=key;nav('client-detail');
+  renderSb(document.getElementById('sb-search')?.value||'');
+  _renderClientDetail(key);
+}
+
+function _renderClientDetail(key){
+  const c=S.clients[key];
+  const calls=[...(c.calls||[])].reverse();
+  const events=S.events.filter(e=>e.clientKey===key).sort((a,b)=>a.date.localeCompare(b.date));
+  const todos=S.todos.filter(t=>t.clientKey===key);
+  const pending=todos.filter(t=>!t.done);
+  const hasApi=!!S.apiKey;
+
+  document.getElementById('client-detail-inner').innerHTML=`
+    <div class="client-hero">
+      <div class="ch-avatar">${ini(c.prenom,c.nom)}</div>
+      <div style="flex:1">
+        <div class="ch-name">${c.name}</div>
+        <div class="ch-meta">${c.email||''}${c.email&&c.phone?' · ':''}${c.phone||''}</div>
+        <div class="ch-stats">
+          <div><div class="ch-stat-n">${(c.calls||[]).length}</div><div class="ch-stat-l">Appels</div></div>
+          <div><div class="ch-stat-n">${events.length}</div><div class="ch-stat-l">RDV</div></div>
+          <div><div class="ch-stat-n" style="color:${pending.length>0?'#facc15':'#fff'}">${pending.length}</div><div class="ch-stat-l">Tâches</div></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-start;position:relative;z-index:1">
+        <button class="btn btn-outline" style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:#fff" onclick="openAddCallModal('${key}')">📝 Saisie manuelle</button>
+        <button class="btn btn-red" onclick="askDelClient('${key}')">🗑</button>
+      </div>
+    </div>
+
+    <div class="client-layout">
+      <div>
+        <!-- ZONE GEMINI -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-hd">
+            <div class="card-title">🎙️ Importer un enregistrement</div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <div class="api-dot ${hasApi?'ok':''}" style="width:6px;height:6px;border-radius:50%;background:${hasApi?'var(--green)':'var(--red)'};${hasApi?'box-shadow:0 0 5px rgba(26,155,114,.6)':''}"></div>
+              <span style="font-size:.71rem;color:var(--t3)">${hasApi?'Gemini prêt':'<a href="#" onclick="openApiModal();return false" style="color:var(--red);text-decoration:underline">Configurer la clé Gemini</a>'}</span>
+            </div>
+          </div>
+          <div style="padding:16px">
+            ${!hasApi?`<div class="no-api-banner">⚠️ Clé API Gemini requise pour la transcription automatique. <a href="#" onclick="openApiModal();return false" style="font-weight:700;text-decoration:underline">Configurer maintenant →</a></div>`:''}
+            <div class="gemini-zone" id="gz-${key}"
+              onclick="document.getElementById('gf-${key}').click()"
+              ondragover="event.preventDefault();this.classList.add('drag')"
+              ondragleave="this.classList.remove('drag')"
+              ondrop="handleDrop(event,'${key}')">
+              <input type="file" id="gf-${key}" accept="audio/*,.mp3,.m4a,.wav,.ogg,.aac" onchange="handleFileSelect(this,'${key}')">
+              <div class="gz-icon">🎵</div>
+              <div class="gz-title">Déposer ou cliquer pour importer un MP3</div>
+              <div class="gz-sub">Formats : MP3, M4A, WAV, OGG · Max 25 Mo<br>Gemini transcrit l'appel et extrait automatiquement résumé, actions et RDV</div>
+            </div>
+            <div class="process-card" id="pc-${key}">
+              <div class="process-title">🤖 Analyse en cours…</div>
+              <div class="process-step" id="ps1-${key}"><span class="step-ico">📤</span> Envoi de l'audio à Gemini</div>
+              <div class="process-step" id="ps2-${key}"><span class="step-ico">🎙️</span> Transcription de l'appel</div>
+              <div class="process-step" id="ps3-${key}"><span class="step-ico">🧠</span> Extraction des informations clés</div>
+              <div class="process-step" id="ps4-${key}"><span class="step-ico">💾</span> Sauvegarde dans la fiche client</div>
+            </div>
+            <div class="result-card" id="rc-${key}">
+              <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:.97rem;color:var(--nav);margin-bottom:14px">✅ Appel analysé et enregistré</div>
+              <div class="result-section">Résumé</div>
+              <div class="result-text" id="rsum-${key}">—</div>
+              <div id="ractions-${key}"></div>
+              <div id="revents-${key}"></div>
+              <button class="btn btn-outline" style="margin-top:4px" onclick="resetGemini('${key}')">＋ Importer un autre enregistrement</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- JOURNAL -->
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title">📞 Journal d'appels <span style="font-size:.72rem;font-weight:400;color:var(--t3);margin-left:4px">${calls.length} appel(s)</span></div>
+          </div>
+          <div id="calls-list-${key}">
+            ${calls.length===0?`<div class="empty" style="padding:28px"><div class="empty-icon">📞</div><div class="empty-title">Aucun appel enregistré</div><div class="empty-sub">Importez un enregistrement MP3 ci-dessus ou utilisez la saisie manuelle.</div></div>`:
+            calls.map(call=>`
+              <div class="call-item">
+                <div class="call-item-top">
+                  <div class="call-date">📞 ${dFr(call.date)}${call.duration?' · <span style="color:var(--t3)">'+call.duration+'</span>':''}</div>
+                  <div style="display:flex;gap:6px;align-items:center">
+                    ${call.source==='gemini'?'<span class="call-tag" style="background:rgba(26,115,232,.1);color:#1a73e8;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:20px">🤖 Gemini</span>':''}
+                    <button class="btn btn-red" style="padding:3px 8px;font-size:.66rem" onclick="deleteCall('${key}','${call.id}')">🗑</button>
+                  </div>
+                </div>
+                ${call.transcription?`<details style="margin-bottom:7px"><summary style="font-size:.72rem;color:var(--accent);cursor:pointer;font-weight:600">📄 Voir la transcription complète</summary><div style="font-size:.77rem;line-height:1.65;color:var(--t2);background:var(--bg);padding:11px;border-radius:8px;margin-top:6px;max-height:180px;overflow-y:auto;white-space:pre-wrap">${call.transcription}</div></details>`:''}
+                <div class="call-summary-txt">${call.summary||'—'}</div>
+                ${(call.actions||[]).length?`<div style="margin-top:8px">${call.actions.map(a=>`<div style="font-size:.77rem;color:var(--gold);padding:2px 0">→ ${a}</div>`).join('')}</div>`:''}
+                <div class="call-tags">
+                  ${(call.events||[]).length?`<span class="call-tag ct-rdv">📅 ${call.events.length} RDV</span>`:''}
+                  ${(call.actions||[]).length?`<span class="call-tag ct-action">→ ${call.actions.length} action(s)</span>`:''}
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div>
+        <div class="card" style="margin-bottom:13px">
+          <div class="card-hd"><div class="card-title">👤 Informations</div></div>
+          <div class="info-row"><div class="info-lbl">Email</div><div class="info-val">${c.email||'—'}</div></div>
+          <div class="info-row"><div class="info-lbl">Téléphone</div><div class="info-val">${c.phone||'—'}</div></div>
+          <div class="info-row"><div class="info-lbl">Projet</div><div class="info-val">${c.interests||'—'}</div></div>
+          <div class="info-row"><div class="info-lbl">Créé le</div><div class="info-val">${dFr(c.createdAt)}</div></div>
+        </div>
+        <div class="card" style="margin-bottom:13px">
+          <div class="card-hd"><div class="card-title">✅ Tâches</div><button class="btn btn-outline" style="font-size:.71rem;padding:4px 9px" onclick="openAddTodoModal('${key}')">＋</button></div>
+          ${todos.length===0?`<div style="padding:13px 16px;font-size:.79rem;color:var(--t3)">Aucune tâche.</div>`:''}
+          ${todos.sort((a,b)=>a.done-b.done).map(t=>`
+            <div style="padding:9px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;cursor:pointer" onclick="openTodoDetail('${t.id}')">
+              <div class="todo-check ${t.done?'checked':''}" onclick="event.stopPropagation();toggleTodo('${t.id}');setTimeout(()=>_renderClientDetail('${key}'),80)" style="width:15px;height:15px;border-radius:4px;font-size:.62rem">✓</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:.79rem;font-weight:500;${t.done?'text-decoration:line-through;opacity:.5':''}color:var(--t1)">${t.text}</div>
+                ${t.dueDate?`<div style="font-size:.69rem;color:${past(t.dueDate)&&!t.done?'var(--red)':'var(--t3)'}">${dFr(t.dueDate)}</div>`:''}
+              </div>
+            </div>`).join('')}
+        </div>
+        <div class="card">
+          <div class="card-hd"><div class="card-title">📅 Événements</div><button class="btn btn-outline" style="font-size:.71rem;padding:4px 9px" onclick="openAddEventModal()">＋</button></div>
+          ${events.length===0?`<div style="padding:13px 16px;font-size:.79rem;color:var(--t3)">Aucun événement.</div>`:''}
+          ${events.map(ev=>`
+            <div style="padding:9px 15px;border-bottom:1px solid var(--border);cursor:pointer" onclick="openEventDetail('${ev.id}')">
+              <div style="font-size:.72rem;font-weight:700;color:var(--accent)">${dFr(ev.date)}${ev.time?' · '+ev.time:''}</div>
+              <div style="font-size:.79rem;color:var(--t1)">${ev.title}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ══════════════════════════════════════════
+   GEMINI MP3 TRANSCRIPTION
+══════════════════════════════════════════ */
+function handleDrop(event,key){
+  event.preventDefault();
+  document.getElementById('gz-'+key)?.classList.remove('drag');
+  const file=event.dataTransfer.files[0];
+  if(file&&(file.type.startsWith('audio/')||/\.(mp3|m4a|wav|ogg|aac)$/i.test(file.name))) loadAudioFile(file,key);
+  else toast('Fichier audio invalide (MP3, M4A, WAV…)','err');
+}
+function handleFileSelect(input,key){if(input.files&&input.files[0])loadAudioFile(input.files[0],key);}
+
+function loadAudioFile(file,key){
+  if(!S.apiKey){openApiModal();toast('Configurez d\'abord votre clé API Gemini','err');return;}
+  if(file.size>26*1024*1024){toast('Fichier trop lourd (max 25 Mo)','err');return;}
+  const gz=document.getElementById('gz-'+key);
+  const pc=document.getElementById('pc-'+key);
+  const rc=document.getElementById('rc-'+key);
+  if(!gz||!pc||!rc)return;
+  gz.style.display='none';pc.classList.add('show');rc.classList.remove('show');
+  // Reset steps
+  ['ps1','ps2','ps3','ps4'].forEach(s=>{const el=document.getElementById(s+'-'+key);if(el){el.classList.remove('done','active');const ico=el.querySelector('.step-ico');if(ico)ico.textContent=['📤','🎙️','🧠','💾'][['ps1','ps2','ps3','ps4'].indexOf(s)];}});
+  const reader=new FileReader();
+  reader.onload=async(e)=>{
+    const b64=e.target.result.split(',')[1];
+    let mt=file.type;const fn=file.name.toLowerCase();
+    if(fn.endsWith('.mp3'))mt='audio/mpeg';
+    else if(fn.endsWith('.m4a'))mt='audio/mp4';
+    else if(fn.endsWith('.wav'))mt='audio/wav';
+    else if(fn.endsWith('.ogg'))mt='audio/ogg';
+    else if(fn.endsWith('.aac'))mt='audio/aac';
+    if(!mt)mt='audio/mpeg';
+    await runGeminiAnalysis(b64,mt,file.name,key);
+  };
+  reader.readAsDataURL(file);
+}
+
+function setStep(id,status){
+  const el=document.getElementById(id);if(!el)return;
+  el.classList.remove('done','active');
+  const ico=el.querySelector('.step-ico');
+  if(status==='active'){el.classList.add('active');if(ico)ico.innerHTML='<span class="spinner"></span>';}
+  else if(status==='done'){el.classList.add('done');if(ico)ico.textContent='✅';}
+}
+
+async function runGeminiAnalysis(b64,mimeType,fileName,key){
+  const c=S.clients[key];const today=toStr();
+  try{
+    setStep('ps1-'+key,'active');
+    const prompt=`Tu es un assistant CRM pour Filovent, agence nautique française spécialisée en location de voiliers et catamarans.
+Analyse cet enregistrement d'appel téléphonique commercial avec le client ${c.name}.
+Date d'aujourd'hui : ${today}.
+
+Réponds UNIQUEMENT avec un objet JSON valide (pas de balises markdown, pas de texte autour) :
+{
+  "transcription": "Transcription complète et fidèle de l'appel, mot pour mot",
+  "summary": "Résumé commercial en 2-3 phrases : besoins exprimés, budget, destination, état d'avancement",
+  "actions": ["Action commerciale à faire suite à cet appel", "Autre action si nécessaire"],
+  "events": [{"title": "Titre du RDV ou rappel", "type": "rdv", "date": "YYYY-MM-DD", "time": "HH:MM", "notes": "contexte"}],
+  "client_interests": "Destination, type de bateau, période, budget, nombre de personnes détectés",
+  "duration_estimate": "X min"
+}
+Règles :
+- Si aucun RDV n'est explicitement fixé dans l'appel, renvoie events: []
+- Si aucune action concrète n'est mentionnée, renvoie actions: []
+- Le champ transcription doit retranscrire fidèlement tout ce qui est dit
+- Le champ type dans events peut être : "rdv", "rappel" ou "suivi"`;
+
+    setStep('ps1-'+key,'done');setStep('ps2-'+key,'active');
+
+    const resp=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${S.apiKey}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        contents:[{parts:[{text:prompt},{inline_data:{mime_type:mimeType,data:b64}}]}],
+        generationConfig:{temperature:0.1,maxOutputTokens:8192}
+      })
+    });
+    const data=await resp.json();
+    if(!resp.ok)throw new Error(data.error?.message||'Erreur API Gemini ('+resp.status+')');
+
+    setStep('ps2-'+key,'done');setStep('ps3-'+key,'active');
+
+    const raw=data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if(!raw)throw new Error("Gemini n'a pas renvoyé de résultat. Vérifiez que le fichier contient de l'audio audible.");
+    const match=raw.match(/\{[\s\S]*\}/);
+    if(!match)throw new Error('Réponse Gemini non JSON : '+raw.slice(0,300));
+    const parsed=JSON.parse(match[0]);
+
+    setStep('ps3-'+key,'done');setStep('ps4-'+key,'active');
+
+    // Events → calendrier
+    const callEvts=[];
+    (parsed.events||[]).forEach(ev=>{
+      if(!ev.date)return;
+      const newEv={id:uid(),title:ev.title||`RDV ${c.name}`,date:ev.date,time:ev.time||'',type:ev.type||'rdv',client:c.name,clientKey:key,notes:ev.notes||`Détecté dans l'appel du ${today}`};
+      S.events.push(newEv);callEvts.push({title:newEv.title,date:ev.date,time:ev.time||''});
+    });
+
+    // Si aucun RDV → relance auto J+5
+    if(callEvts.length===0){
+      const fu=new Date();fu.setDate(fu.getDate()+5);const fuStr=fu.toISOString().split('T')[0];
+      S.events.push({id:uid(),title:`🔔 Relancer ${c.name}`,date:fuStr,time:'',type:'rappel',client:c.name,clientKey:key,notes:`Aucun RDV fixé lors de l'appel du ${today} — relance automatique`});
+      S.todos.push({id:uid(),text:`Relancer ${c.name}`,details:`Aucun RDV fixé. Résumé : ${parsed.summary}`,dueDate:fuStr,clientKey:key,done:false,createdAt:today,source:'auto'});
+    }
+
+    // Tâches pour chaque action
+    (parsed.actions||[]).forEach(a=>{S.todos.push({id:uid(),text:a,details:`Issue de l'appel du ${today} avec ${c.name}.`,dueDate:today,clientKey:key,done:false,createdAt:today,source:'auto'});});
+
+    // Enrichir les intérêts si vide
+    if(parsed.client_interests&&!c.interests)c.interests=parsed.client_interests;
+
+    // Ajouter au journal
+    if(!c.calls)c.calls=[];
+    c.calls.push({id:uid(),date:today,duration:parsed.duration_estimate||'',summary:parsed.summary,transcription:parsed.transcription,actions:parsed.actions||[],events:callEvts,source:'gemini',fileName});
+
+    save();updateBadges();
+    setStep('ps4-'+key,'done');
+
+    await new Promise(r=>setTimeout(r,400));
+    showGeminiResult(parsed,key,callEvts);
+    renderDashboard();renderCalendar();
+    toast(`Appel de ${c.name} analysé ✓${callEvts.length?' + RDV ajouté':' + rappel de relance créé'}`, 'ok');
+
+  }catch(err){
+    console.error(err);
+    document.getElementById('pc-'+key)?.classList.remove('show');
+    const gz=document.getElementById('gz-'+key);if(gz)gz.style.display='';
+    toast('Erreur Gemini : '+err.message,'err');
+  }
+}
+
+function showGeminiResult(parsed,key,callEvts){
+  const pc=document.getElementById('pc-'+key);const rc=document.getElementById('rc-'+key);
+  if(pc)pc.classList.remove('show');if(rc)rc.classList.add('show');
+  const rsumEl=document.getElementById('rsum-'+key);if(rsumEl)rsumEl.textContent=parsed.summary||'—';
+  const raEl=document.getElementById('ractions-'+key);
+  if(raEl){raEl.innerHTML='';if((parsed.actions||[]).length){raEl.innerHTML=`<div class="result-section" style="margin-top:4px">Actions créées dans la to-do</div>`+parsed.actions.map(a=>`<div class="result-action">→ ${a}</div>`).join('');}}
+  const reEl=document.getElementById('revents-'+key);
+  if(reEl){reEl.innerHTML='';if(callEvts.length){reEl.innerHTML=`<div class="result-section" style="margin-top:4px">Événements ajoutés au calendrier</div>`+callEvts.map(ev=>`<div class="result-event"><span class="result-event-dt">${dFr(ev.date)}</span>${ev.time?ev.time+' · ':''}${ev.title}</div>`).join('');}}
+  // Refresh journal
+  const listEl=document.getElementById('calls-list-'+key);
+  if(listEl)_refreshCallsList(key,listEl);
+}
+
+function _refreshCallsList(key,listEl){
+  const calls=[...(S.clients[key]?.calls||[])].reverse();
+  if(!calls.length){listEl.innerHTML=`<div class="empty" style="padding:28px"><div class="empty-icon">📞</div><div class="empty-title">Aucun appel enregistré</div><div class="empty-sub">Importez un enregistrement MP3 ou utilisez la saisie manuelle.</div></div>`;return;}
+  listEl.innerHTML=calls.map(call=>`
+    <div class="call-item">
+      <div class="call-item-top">
+        <div class="call-date">📞 ${dFr(call.date)}${call.duration?' · <span style="color:var(--t3)">'+call.duration+'</span>':''}</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          ${call.source==='gemini'?'<span class="call-tag" style="background:rgba(26,115,232,.1);color:#1a73e8;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:20px">🤖 Gemini</span>':''}
+          <button class="btn btn-red" style="padding:3px 8px;font-size:.66rem" onclick="deleteCall('${key}','${call.id}')">🗑</button>
+        </div>
+      </div>
+      ${call.transcription?`<details style="margin-bottom:7px"><summary style="font-size:.72rem;color:var(--accent);cursor:pointer;font-weight:600">📄 Transcription complète</summary><div style="font-size:.77rem;line-height:1.65;color:var(--t2);background:var(--bg);padding:11px;border-radius:8px;margin-top:6px;max-height:180px;overflow-y:auto;white-space:pre-wrap">${call.transcription}</div></details>`:''}
+      <div class="call-summary-txt">${call.summary||'—'}</div>
+      ${(call.actions||[]).length?`<div style="margin-top:8px">${call.actions.map(a=>`<div style="font-size:.77rem;color:var(--gold);padding:2px 0">→ ${a}</div>`).join('')}</div>`:''}
+      <div class="call-tags">
+        ${(call.events||[]).length?`<span class="call-tag ct-rdv">📅 ${call.events.length} RDV</span>`:''}
+        ${(call.actions||[]).length?`<span class="call-tag ct-action">→ ${call.actions.length} action(s)</span>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function resetGemini(key){
+  const gz=document.getElementById('gz-'+key);const pc=document.getElementById('pc-'+key);const rc=document.getElementById('rc-'+key);
+  if(gz)gz.style.display='';if(pc)pc.classList.remove('show');if(rc)rc.classList.remove('show');
+  const fi=document.getElementById('gf-'+key);if(fi)fi.value='';
+}
+
+/* ══════════════════════════════════════════
+   CALLS MANUEL
+══════════════════════════════════════════ */
+function openAddCallModal(key){
+  S.currentCallClient=key;const c=S.clients[key];
+  document.getElementById('add-call-name').textContent='Appel avec '+c.name;
+  document.getElementById('call-date').value=toStr();
+  ['call-duration','call-summary','call-actions','call-rdv-date','call-rdv-time'].forEach(id=>document.getElementById(id).value='');
+  openModal('modal-add-call');
+}
+function saveCall(){
+  const key=S.currentCallClient;if(!key||!S.clients[key])return;
+  const summary=document.getElementById('call-summary').value.trim();
+  if(!summary){toast('Résumé requis','err');return;}
+  const c=S.clients[key];
+  const actRaw=document.getElementById('call-actions').value.trim();
+  const actions=actRaw?actRaw.split('\n').map(a=>a.trim()).filter(Boolean):[];
+  const rdvDate=document.getElementById('call-rdv-date').value;
+  const rdvTime=document.getElementById('call-rdv-time').value;
+  const callDate=document.getElementById('call-date').value;
+  const callEvts=[];
+  if(rdvDate){
+    const ev={id:uid(),title:`RDV ${c.name}`,date:rdvDate,time:rdvTime||'',type:'rdv',client:c.name,clientKey:key,notes:`Fixé lors de l'appel du ${dFr(callDate)}`};
+    S.events.push(ev);callEvts.push({title:ev.title,date:rdvDate,time:rdvTime});
+  }else{
+    const fu=new Date();fu.setDate(fu.getDate()+5);const fuStr=fu.toISOString().split('T')[0];
+    S.events.push({id:uid(),title:`🔔 Relancer ${c.name}`,date:fuStr,time:'',type:'rappel',client:c.name,clientKey:key,notes:`Aucun RDV fixé le ${dFr(callDate)}`});
+    S.todos.push({id:uid(),text:`Relancer ${c.name}`,details:`Aucun RDV fixé. Résumé : ${summary}`,dueDate:fuStr,clientKey:key,done:false,createdAt:toStr(),source:'auto'});
+  }
+  actions.forEach(a=>S.todos.push({id:uid(),text:a,details:`Action issue de l'appel du ${dFr(callDate)} avec ${c.name}.`,dueDate:callDate,clientKey:key,done:false,createdAt:toStr(),source:'auto'}));
+  if(!c.calls)c.calls=[];
+  c.calls.push({id:uid(),date:callDate,duration:document.getElementById('call-duration').value.trim(),summary,actions,events:callEvts,source:'manual'});
+  save();updateBadges();closeModal('modal-add-call');
+  toast('Appel enregistré'+(rdvDate?' + RDV ajouté ✓':' + rappel créé ✓'),'ok');
+  _renderClientDetail(key);renderCalendar();renderDashboard();
+}
+function deleteCall(clientKey,callId){
+  const c=S.clients[clientKey];if(!c)return;
+  c.calls=(c.calls||[]).filter(call=>call.id!==callId);
+  save();toast('Appel supprimé');
+  const listEl=document.getElementById('calls-list-'+clientKey);
+  if(listEl)_refreshCallsList(clientKey,listEl);
+  // Update counter in hero
+  const heroName=document.querySelector('.ch-name');
+  if(heroName)_renderClientDetail(clientKey);
+}
+
+/* ══════════════════════════════════════════
+   DELETE CLIENT
+══════════════════════════════════════════ */
+function askDelClient(key){S.pendingDelKey=key;document.getElementById('confirm-del-msg').textContent=`Supprimer définitivement ${S.clients[key]?.name} ? Tous les appels, tâches et événements liés seront effacés.`;openModal('modal-confirm-del');}
+function confirmDelClient(){
+  const key=S.pendingDelKey;if(!key)return;const name=S.clients[key]?.name;
+  delete S.clients[key];S.events=S.events.filter(e=>e.clientKey!==key);S.todos=S.todos.filter(t=>t.clientKey!==key);
+  S.pendingDelKey=null;save();updateBadges();renderSb();renderClientsGrid();closeModal('modal-confirm-del');toast(`${name} supprimé`);nav('clients');
+}
+
+/* ══════════════════════════════════════════
+   MODAL/OVERLAY
+══════════════════════════════════════════ */
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function closeOverlay(id){document.getElementById(id).classList.remove('open');}
+
+document.querySelectorAll('.modal').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});});
+document.getElementById('ov-todo').addEventListener('click',e=>{if(e.target===document.getElementById('ov-todo'))closeOverlay('ov-todo');});
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded',()=>{
+  load();
+  updateApiDot();
+  updateBadges();
+  renderDashboard();
+  renderCalendar();
+  renderTodayStrip();
+  renderTodos();
+  renderClientsGrid();
+});
+</script>
+</body>
+</html>

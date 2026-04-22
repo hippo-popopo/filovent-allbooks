@@ -74,7 +74,7 @@ input,textarea,select{font-family:inherit;outline:none;background:transparent}
 .card-hd{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .card-title{font-weight:700;font-size:.87rem;color:var(--nav);display:flex;align-items:center;gap:7px}
 
-/* CALENDAR */
+/* CALENDAR — week view */
 .cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:17px}
 .cal-nav-btn{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:.8rem;transition:.15s;cursor:pointer}
 .cal-nav-btn:hover{border-color:var(--accent);color:var(--accent)}
@@ -82,6 +82,48 @@ input,textarea,select{font-family:inherit;outline:none;background:transparent}
 .cal-vtoggle{display:flex;border:1px solid var(--border);border-radius:7px;overflow:hidden}
 .cal-vbtn{padding:5px 13px;background:var(--card);font-size:.74rem;font-weight:500;color:var(--t3);transition:.15s;cursor:pointer}
 .cal-vbtn.active{background:var(--nav);color:#fff}
+
+/* ── WEEK GRID ── */
+.cal-week-grid{background:var(--card);border-radius:var(--r);border:1px solid var(--border);overflow:hidden}
+.cal-week-head{display:grid;grid-template-columns:52px repeat(7,1fr);border-bottom:2px solid var(--border);background:var(--bg)}
+.cal-week-corner{border-right:1px solid var(--border)}
+.cal-week-dh{padding:10px 6px;text-align:center;border-right:1px solid var(--border)}
+.cal-week-dh:last-child{border-right:none}
+.cal-week-dh-day{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+.cal-week-dh-num{font-size:1.1rem;font-weight:800;color:var(--t2);margin-top:2px;width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%}
+.cal-week-dh-num.today{background:var(--nav);color:#fff}
+.cal-week-body{display:grid;grid-template-columns:52px repeat(7,1fr)}
+.cal-time-col{border-right:1px solid var(--border)}
+.cal-time-slot{height:56px;border-bottom:1px solid rgba(0,0,0,.04);padding:0 6px;display:flex;align-items:flex-start;padding-top:4px}
+.cal-time-label{font-size:.6rem;font-weight:600;color:var(--t3);white-space:nowrap}
+.cal-day-col{border-right:1px solid var(--border);position:relative;min-height:504px}
+.cal-day-col:last-child{border-right:none}
+.cal-day-col.today-col{background:rgba(46,127,200,.025)}
+.cal-hour-line{height:56px;border-bottom:1px solid rgba(0,0,0,.04);position:relative}
+.cal-half-line{position:absolute;bottom:0;left:0;right:0;border-bottom:1px dashed rgba(0,0,0,.04);top:50%}
+
+/* Event blocks in week view */
+.cal-ev-block{position:absolute;left:3px;right:3px;border-radius:6px;padding:5px 8px;cursor:pointer;transition:all .15s;overflow:hidden;border-left:3px solid transparent;min-height:24px;z-index:2}
+.cal-ev-block:hover{filter:brightness(.94);transform:scaleX(1.01)}
+.cal-ev-block.ev-rdv{background:rgba(46,127,200,.13);border-left-color:var(--accent)}
+.cal-ev-block.ev-rappel{background:rgba(200,146,58,.13);border-left-color:var(--gold)}
+.cal-ev-block-time{font-size:.6rem;font-weight:700;color:var(--t3);display:block;margin-bottom:1px}
+.cal-ev-block-name{font-size:.72rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-ev-block.ev-rdv .cal-ev-block-name{color:var(--accent)}
+.cal-ev-block.ev-rappel .cal-ev-block-name{color:var(--gold)}
+.cal-ev-block-type{font-size:.58rem;font-weight:600;opacity:.7;margin-top:1px}
+
+/* All-day band (events with no time) */
+.cal-allday-band{display:grid;grid-template-columns:52px repeat(7,1fr);border-bottom:1px solid var(--border);min-height:28px}
+.cal-allday-lbl{border-right:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.55rem;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.cal-allday-cell{border-right:1px solid var(--border);padding:3px 3px;display:flex;flex-direction:column;gap:2px}
+.cal-allday-cell:last-child{border-right:none}
+.cal-allday-pill{border-radius:4px;padding:2px 7px;font-size:.65rem;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:.12s}
+.cal-allday-pill:hover{filter:brightness(.93)}
+.cal-allday-pill.ev-rdv{background:rgba(46,127,200,.13);color:var(--accent)}
+.cal-allday-pill.ev-rappel{background:rgba(200,146,58,.13);color:var(--gold)}
+
+/* Month view kept minimal */
 .cal-grid{background:var(--card);border-radius:var(--r);border:1px solid var(--border);overflow:hidden}
 .cal-head{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border)}
 .cal-dh{padding:9px 5px;text-align:center;font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
@@ -92,16 +134,12 @@ input,textarea,select{font-family:inherit;outline:none;background:transparent}
 .cal-cell.today{background:rgba(46,127,200,.05)}
 .cal-cell.today .cal-num{background:var(--nav);color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.72rem}
 .cal-num{font-size:.72rem;font-weight:700;color:var(--t2);margin-bottom:3px;display:inline-block}
-.cal-cell:hover{background:#f7f9fc}
-/* Clean event pills */
 .cal-pill{display:flex;align-items:center;gap:4px;padding:2px 6px;border-radius:4px;margin-bottom:2px;cursor:pointer;transition:all .12s;max-width:100%}
 .cal-pill:hover{filter:brightness(.93)}
 .cal-pill-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 .cal-pill-txt{font-size:.60rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
 .pill-rdv{background:rgba(46,127,200,.1)}.pill-rdv .cal-pill-dot{background:var(--accent)}.pill-rdv .cal-pill-txt{color:var(--accent)}
 .pill-rappel{background:rgba(200,146,58,.1)}.pill-rappel .cal-pill-dot{background:var(--gold)}.pill-rappel .cal-pill-txt{color:var(--gold)}
-.pill-suivi{background:rgba(26,155,114,.1)}.pill-suivi .cal-pill-dot{background:var(--green)}.pill-suivi .cal-pill-txt{color:var(--green)}
-.pill-todo{background:rgba(217,79,61,.08)}.pill-todo .cal-pill-dot{background:var(--red)}.pill-todo .cal-pill-txt{color:var(--red)}
 .cal-more{font-size:.57rem;color:var(--t3);padding:1px 6px;font-weight:600;cursor:default}
 /* Today strip */
 .today-strip{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:11px 15px;margin-bottom:14px;display:none}
@@ -332,20 +370,12 @@ textarea.form-ctrl{resize:vertical}
         <div class="cal-month" id="cal-month">—</div>
         <button class="cal-nav-btn" onclick="calNav(1)">›</button>
         <div class="cal-vtoggle">
-          <button class="cal-vbtn active" onclick="setCalView('month',this)">Mois</button>
-          <button class="cal-vbtn" onclick="setCalView('week',this)">Semaine</button>
+          <button class="cal-vbtn" onclick="setCalView('month',this)" id="vbtn-month">Mois</button>
+          <button class="cal-vbtn active" onclick="setCalView('week',this)" id="vbtn-week">Semaine</button>
         </div>
         <button class="btn btn-outline" onclick="openAddEventModal()">＋ Événement</button>
       </div>
-      <div class="cal-grid">
-        <div class="cal-head">
-          <div class="cal-dh">Lun</div><div class="cal-dh">Mar</div><div class="cal-dh">Mer</div>
-          <div class="cal-dh">Jeu</div><div class="cal-dh">Ven</div>
-          <div class="cal-dh" style="color:var(--red)">Sam</div>
-          <div class="cal-dh" style="color:var(--red)">Dim</div>
-        </div>
-        <div class="cal-body" id="cal-body"></div>
-      </div>
+      <div id="cal-container"></div>
     </div>
   </div>
 
@@ -532,7 +562,7 @@ textarea.form-ctrl{resize:vertical}
 ══════════════════════════════════════════ */
 const S = {
   apiKey:'', clients:{}, events:[], todos:[],
-  calDate:new Date(), calView:'month',
+  calDate:new Date(), calView:'week',
   currentClient:null, pendingDelKey:null, currentCallClient:null, todoFilter:'all'
 };
 
@@ -687,64 +717,212 @@ function renderDashboard(){
 /* ══════════════════════════════════════════
    CALENDAR
 ══════════════════════════════════════════ */
-function calNav(d){if(S.calView==='month')S.calDate.setMonth(S.calDate.getMonth()+d);else S.calDate.setDate(S.calDate.getDate()+d*7);renderCalendar();}
-function setCalView(v,btn){S.calView=v;document.querySelectorAll('.cal-vbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderCalendar();}
+const HOURS = [8,9,10,11,12,13,14,15,16,17,18,19,20];
+const HOUR_H = 56; // px per hour
+const CAL_START = 8; // first hour shown
+
+function calNav(d){
+  if(S.calView==='month') S.calDate.setMonth(S.calDate.getMonth()+d);
+  else S.calDate.setDate(S.calDate.getDate()+d*7);
+  renderCalendar();
+}
+function setCalView(v,btn){
+  S.calView=v;
+  document.querySelectorAll('.cal-vbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCalendar();
+}
+
+// Keep only rdv + rappel, one per client per day (highest priority wins)
+function getCalEvents(){
+  const priority={rdv:0,rappel:1};
+  // Group by clientKey+date, keep highest priority
+  const map={};
+  S.events
+    .filter(e=>e.type==='rdv'||e.type==='rappel')
+    .forEach(ev=>{
+      const k=(ev.clientKey||ev.id)+'__'+ev.date;
+      if(!map[k]||priority[ev.type]<priority[map[k].type]) map[k]=ev;
+    });
+  return Object.values(map);
+}
+
 function renderCalendar(){
   const d=S.calDate;
   const M=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-  document.getElementById('cal-month').textContent=M[d.getMonth()]+' '+d.getFullYear();
-  const body=document.getElementById('cal-body');body.innerHTML='';
-  const todayTs=new Date(toStr()).getTime();
+  const calEvents=getCalEvents();
 
-  const buildCell=(cd,extra='')=>{
-    const isToday=cd.getTime()===todayTs;
-    const dk=cd.toISOString().split('T')[0];
-    const cell=document.createElement('div');
-    cell.className='cal-cell'+extra+(isToday?' today':'');
-    const num=document.createElement('div');num.className='cal-num';num.textContent=cd.getDate();cell.appendChild(num);
+  if(S.calView==='week'){
+    // Week bounds
+    const ws=new Date(d);
+    let dow=ws.getDay();dow=dow===0?6:dow-1;
+    ws.setDate(ws.getDate()-dow);
+    const we=new Date(ws);we.setDate(ws.getDate()+6);
+    const sameMonth=ws.getMonth()===we.getMonth();
+    document.getElementById('cal-month').textContent=
+      sameMonth
+        ? M[ws.getMonth()]+' '+ws.getFullYear()
+        : dFr(ws.toISOString().split('T')[0]).replace(/\d{4}/,'').trim()
+          +' — '+dFr(we.toISOString().split('T')[0]);
 
-    const dayEvents=S.events.filter(e=>e.date===dk).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
-    const dayTodos=S.todos.filter(t=>t.dueDate===dk&&!t.done);
-    const MAX=3; let shown=0;
+    const days=[];
+    for(let i=0;i<7;i++){const cd=new Date(ws);cd.setDate(ws.getDate()+i);days.push(cd);}
+    const todayStr=toStr();
 
-    dayEvents.forEach(ev=>{
-      if(shown>=MAX)return;
-      const pill=document.createElement('div');
-      const pc={rdv:'pill-rdv',rappel:'pill-rappel',suivi:'pill-suivi'}[ev.type]||'pill-rdv';
-      pill.className='cal-pill '+pc;
-      // Show client name if available, else short title
-      const lbl=ev.client||(ev.title.length>18?ev.title.slice(0,17)+'…':ev.title);
-      const prefix=ev.time?ev.time+' ':({rdv:'RDV ',rappel:'⏰ ',suivi:'📋 '}[ev.type]||'');
-      pill.innerHTML=`<div class="cal-pill-dot"></div><div class="cal-pill-txt">${prefix}${lbl}</div>`;
-      pill.onclick=e=>{e.stopPropagation();openEventDetail(ev.id);};
-      cell.appendChild(pill);shown++;
+    const container=document.getElementById('cal-container');
+    container.innerHTML='';
+
+    // ── Build week grid ──
+    const grid=document.createElement('div');
+    grid.className='cal-week-grid';
+
+    // Header row
+    const head=document.createElement('div');
+    head.className='cal-week-head';
+    const corner=document.createElement('div');corner.className='cal-week-corner';head.appendChild(corner);
+    const dayNames=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+    days.forEach((cd,i)=>{
+      const dk=cd.toISOString().split('T')[0];
+      const isToday=dk===todayStr;
+      const dh=document.createElement('div');dh.className='cal-week-dh';
+      dh.innerHTML=`<div class="cal-week-dh-day">${dayNames[i]}</div>
+        <div class="cal-week-dh-num${isToday?' today':''}">${cd.getDate()}</div>`;
+      head.appendChild(dh);
     });
+    grid.appendChild(head);
 
-    dayTodos.forEach(td=>{
-      if(shown>=MAX)return;
-      const pill=document.createElement('div');pill.className='cal-pill pill-todo';
-      const cl=td.clientKey?S.clients[td.clientKey]?.name:'';
-      pill.innerHTML=`<div class="cal-pill-dot"></div><div class="cal-pill-txt">${cl||td.text}</div>`;
-      pill.onclick=e=>{e.stopPropagation();openTodoDetail(td.id);};
-      cell.appendChild(pill);shown++;
+    // All-day band (events without time)
+    const alldayEvents=days.map(cd=>{
+      const dk=cd.toISOString().split('T')[0];
+      return calEvents.filter(e=>e.date===dk&&!e.time);
     });
-
-    const total=dayEvents.length+dayTodos.length;
-    if(total>MAX){
-      const m=document.createElement('div');m.className='cal-more';
-      m.textContent=`+${total-MAX}`;cell.appendChild(m);
+    const hasAllday=alldayEvents.some(evs=>evs.length>0);
+    if(hasAllday){
+      const band=document.createElement('div');band.className='cal-allday-band';
+      const lbl=document.createElement('div');lbl.className='cal-allday-lbl';lbl.textContent='Sans horaire';band.appendChild(lbl);
+      alldayEvents.forEach(evs=>{
+        const cell=document.createElement('div');cell.className='cal-allday-cell';
+        evs.forEach(ev=>{
+          const pill=document.createElement('div');
+          pill.className='cal-allday-pill ev-'+ev.type;
+          pill.textContent=(ev.client||ev.title);
+          pill.onclick=()=>openEventDetail(ev.id);
+          cell.appendChild(pill);
+        });
+        band.appendChild(cell);
+      });
+      grid.appendChild(band);
     }
-    return cell;
-  };
-  if(S.calView==='month'){
-    const first=new Date(d.getFullYear(),d.getMonth(),1);let dow=first.getDay();dow=dow===0?6:dow-1;
-    const dim=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
-    const total=Math.ceil((dow+dim)/7)*7;
-    for(let i=0;i<total;i++){const cd=new Date(d.getFullYear(),d.getMonth(),1-dow+i);body.appendChild(buildCell(cd,cd.getMonth()!==d.getMonth()?' other':''));}
+
+    // Body: time col + day cols
+    const body=document.createElement('div');body.className='cal-week-body';
+
+    // Time column
+    const timeCol=document.createElement('div');timeCol.className='cal-time-col';
+    HOURS.forEach(h=>{
+      const slot=document.createElement('div');slot.className='cal-time-slot';
+      slot.innerHTML=`<span class="cal-time-label">${h}h</span>`;
+      timeCol.appendChild(slot);
+    });
+    body.appendChild(timeCol);
+
+    // Day columns
+    days.forEach(cd=>{
+      const dk=cd.toISOString().split('T')[0];
+      const isToday=dk===todayStr;
+      const col=document.createElement('div');
+      col.className='cal-day-col'+(isToday?' today-col':'');
+
+      // Hour lines background
+      HOURS.forEach(()=>{
+        const line=document.createElement('div');line.className='cal-hour-line';
+        const half=document.createElement('div');half.className='cal-half-line';
+        line.appendChild(half);col.appendChild(line);
+      });
+
+      // Events with time → absolutely positioned
+      const dayEvs=calEvents.filter(e=>e.date===dk&&e.time);
+      dayEvs.forEach(ev=>{
+        const [hh,mm]=(ev.time||'09:00').split(':').map(Number);
+        const topOffset=((hh-CAL_START)*60+mm)/60*HOUR_H;
+        const block=document.createElement('div');
+        block.className='cal-ev-block ev-'+ev.type;
+        block.style.top=Math.max(0,topOffset)+'px';
+        block.style.height=(HOUR_H*1.2)+'px'; // ~1h15 visual height
+        const clientName=ev.client||ev.title;
+        const typeLabel={rdv:'RDV',rappel:'Relance'}[ev.type]||ev.type;
+        block.innerHTML=`
+          <span class="cal-ev-block-time">${ev.time}</span>
+          <div class="cal-ev-block-name">${clientName}</div>
+          <div class="cal-ev-block-type">${typeLabel}</div>`;
+        block.onclick=()=>openEventDetail(ev.id);
+        col.appendChild(block);
+      });
+
+      body.appendChild(col);
+    });
+
+    grid.appendChild(body);
+    container.appendChild(grid);
+
+    // Current time indicator
+    if(days.some(cd=>cd.toISOString().split('T')[0]===todayStr)){
+      const now=new Date();
+      const colIdx=days.findIndex(cd=>cd.toISOString().split('T')[0]===todayStr);
+      if(colIdx>=0){
+        const todayCol=body.querySelectorAll('.cal-day-col')[colIdx];
+        const minFromStart=(now.getHours()-CAL_START)*60+now.getMinutes();
+        if(minFromStart>=0&&minFromStart<=HOURS.length*60){
+          const line=document.createElement('div');
+          line.style.cssText=`position:absolute;left:0;right:0;top:${minFromStart/60*HOUR_H}px;height:2px;background:var(--red);z-index:10;pointer-events:none;border-radius:1px`;
+          const dot=document.createElement('div');
+          dot.style.cssText=`position:absolute;left:-4px;top:-4px;width:8px;height:8px;border-radius:50%;background:var(--red)`;
+          line.appendChild(dot);
+          todayCol.appendChild(line);
+        }
+      }
+    }
+
   } else {
-    const ws=new Date(d);let dow=ws.getDay();dow=dow===0?6:dow-1;ws.setDate(ws.getDate()-dow);
-    for(let i=0;i<7;i++){const cd=new Date(ws);cd.setDate(ws.getDate()+i);const c=buildCell(cd);c.style.minHeight='140px';body.appendChild(c);}
+    // ── MONTH VIEW ── (simplified, rdv+rappel only)
+    document.getElementById('cal-month').textContent=M[d.getMonth()]+' '+d.getFullYear();
+    const container=document.getElementById('cal-container');
+    container.innerHTML='';
+    const grid=document.createElement('div');grid.className='cal-grid';
+    const head=document.createElement('div');head.className='cal-head';
+    ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].forEach(n=>{
+      const dh=document.createElement('div');dh.className='cal-dh';dh.textContent=n;head.appendChild(dh);
+    });
+    grid.appendChild(head);
+    const body=document.createElement('div');body.className='cal-body';
+    const todayTs=new Date(toStr()).getTime();
+    const first=new Date(d.getFullYear(),d.getMonth(),1);
+    let startDow=first.getDay();startDow=startDow===0?6:startDow-1;
+    const dim=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+    const total=Math.ceil((startDow+dim)/7)*7;
+    for(let i=0;i<total;i++){
+      const cd=new Date(d.getFullYear(),d.getMonth(),1-startDow+i);
+      const isToday=cd.getTime()===todayTs;
+      const dk=cd.toISOString().split('T')[0];
+      const isOther=cd.getMonth()!==d.getMonth();
+      const cell=document.createElement('div');
+      cell.className='cal-cell'+(isOther?' other':'')+(isToday?' today':'');
+      const num=document.createElement('div');num.className='cal-num';num.textContent=cd.getDate();cell.appendChild(num);
+      calEvents.filter(e=>e.date===dk).slice(0,3).forEach(ev=>{
+        const pill=document.createElement('div');
+        const pc={rdv:'pill-rdv',rappel:'pill-rappel'}[ev.type]||'pill-rdv';
+        pill.className='cal-pill '+pc;
+        const lbl=ev.client||ev.title;
+        pill.innerHTML=`<div class="cal-pill-dot"></div><div class="cal-pill-txt">${ev.time?ev.time+' ':''} ${lbl}</div>`;
+        pill.onclick=e=>{e.stopPropagation();openEventDetail(ev.id);};
+        cell.appendChild(pill);
+      });
+      body.appendChild(cell);
+    }
+    grid.appendChild(body);
+    container.appendChild(grid);
   }
+
   renderTodayStrip();
 }
 
@@ -755,30 +933,29 @@ function renderTodayStrip(){
   const items=document.getElementById('today-strip-items');
   if(!strip)return;
   lbl.textContent='Aujourd\'hui — '+dFr(today);
-  const todayEv=S.events.filter(e=>e.date===today);
-  const todayTd=S.todos.filter(t=>t.dueDate===today&&!t.done);
-  const overdueT=S.todos.filter(t=>!t.done&&t.dueDate&&t.dueDate<today).slice(0,3);
-  const all=[...overdueT,...todayEv.map(e=>({...e,_ev:true})),...todayTd];
+  // Only rdv + rappel in today strip
+  const todayEv=S.events.filter(e=>e.date===today&&(e.type==='rdv'||e.type==='rappel'));
+  const overdueRelances=S.events.filter(e=>e.date<today&&e.type==='rappel'&&!e._done).slice(0,3);
+  const all=[...overdueRelances.map(e=>({...e,_ev:true,_overdue:true})),...todayEv.map(e=>({...e,_ev:true}))];
   if(!all.length){strip.classList.remove('show');return;}
   strip.classList.add('show');
   items.innerHTML=all.slice(0,7).map(item=>{
     if(item._ev){
-      const tL={rdv:'RDV',rappel:'Rappel',suivi:'Suivi'};
+      const isRappel=item.type==='rappel';
+      const isOverdue=item._overdue;
+      const col=isRappel?'var(--gold)':'var(--accent)';
+      const bg=isRappel?'rgba(200,146,58,.12)':'rgba(46,127,200,.12)';
+      const lbl=isRappel?'Relance':'RDV';
       return `<div class="ts-row" onclick="openEventDetail('${item.id}')">
-        <div class="ts-check" style="background:rgba(46,127,200,.12);border-color:var(--accent);color:var(--accent);font-size:.6rem">📅</div>
-        <div class="ts-lbl">${item.title}</div>
-        ${item.time?`<span style="font-size:.64rem;color:var(--t3)">${item.time}</span>`:''}
-        <span class="ts-badge" style="background:rgba(46,127,200,.1);color:var(--accent)">${tL[item.type]||'RDV'}</span>
+        <div style="width:32px;height:32px;border-radius:8px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0">${isRappel?'🔔':'📅'}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.81rem;font-weight:600;color:var(--t1);${isOverdue?'color:var(--red)':''}">${isOverdue?'⚠ En retard — ':''}<span>${item.client||item.title}</span></div>
+          ${item.time?`<div style="font-size:.68rem;color:var(--t3)">${item.time}</div>`:`<div style="font-size:.68rem;color:var(--t3)">${isOverdue?'Prévu le '+dFr(item.date):'Toute la journée'}</div>`}
+        </div>
+        <span class="ts-badge" style="background:${bg};color:${col}">${lbl}</span>
       </div>`;
     }
-    const ov=item.dueDate<today;
-    const cl=item.clientKey?S.clients[item.clientKey]?.name:'';
-    return `<div class="ts-row" onclick="openTodoDetail('${item.id}')">
-      <div class="ts-check ${item.done?'ok':''}" onclick="event.stopPropagation();quickToggleTodo('${item.id}')">✓</div>
-      <div class="ts-lbl ${ov?'':''}"><span style="${ov?'color:var(--red);font-weight:700':''}">${ov?'⚠ ':''}${item.text}</span></div>
-      ${cl?`<span class="ts-client">${cl}</span>`:''}
-      <span class="ts-badge" style="background:rgba(217,79,61,.08);color:var(--red)">Tâche</span>
-    </div>`;
+    return '';
   }).join('');
 }
 function quickToggleTodo(id){const t=S.todos.find(x=>x.id===id);if(t){t.done=!t.done;save();updateBadges();renderTodayStrip();renderTodos();}}
